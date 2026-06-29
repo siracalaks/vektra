@@ -128,15 +128,16 @@
 </head>
 <body>
 <header>
-  <div class="brand"><span class="logo">V</span><h1>Vektra<small>Komuta Merkezi</small></h1></div>
+  <div class="brand"><span class="logo">V</span><h1>Vektra<small data-i18n="brand_sub">Komuta Merkezi</small></h1></div>
   <div class="tabs">
-    <button class="tab on" data-tab="lib">Kütüphane</button>
-    <button class="tab" data-tab="intel">İstihbarat</button>
-    <button class="tab" data-tab="ask">Sor</button>
-    <button class="tab" data-tab="settings">Ayarlar</button>
-    <button class="tab" data-tab="setup">Kurulum</button>
-    <button class="tab" data-tab="howto">Nasıl Çalışır</button>
+    <button class="tab on" data-tab="lib" data-i18n="tab_lib">Kütüphane</button>
+    <button class="tab" data-tab="intel" data-i18n="tab_intel">İstihbarat</button>
+    <button class="tab" data-tab="ask" data-i18n="tab_ask">Sor</button>
+    <button class="tab" data-tab="settings" data-i18n="tab_settings">Ayarlar</button>
+    <button class="tab" data-tab="setup" data-i18n="tab_setup">Kurulum</button>
+    <button class="tab" data-tab="howto" data-i18n="tab_howto">Nasıl Çalışır</button>
   </div>
+  <select id="lang" title="Language / Dil" style="width:auto;flex:0 0 auto;padding:6px 8px;font-size:12px"><option value="tr">🇹🇷 TR</option><option value="en">🇬🇧 EN</option></select>
   <span id="conn" class="conn"></span>
 </header>
 <div class="wrap">
@@ -144,7 +145,7 @@
   <!-- LIBRARY -->
   <section id="lib">
     <div class="filters">
-      <input id="lq" placeholder="Ara: araç…">
+      <input id="lq" data-i18n-ph="ph_lib_search" placeholder="Ara: araç…">
       <select id="lstage"></select>
       <select id="ltype"></select>
       <select id="ldomain"></select>
@@ -156,20 +157,20 @@
   <!-- INTEL -->
   <section id="intel" style="display:none">
     <div class="panel" id="intelConnect" style="display:none">
-      <b>İstihbarat verisi için Supabase'i bağla.</b>
-      <div class="empty">Henüz motor kurulmadıysa burası boş kalır. "Ayarlar" sekmesinden Supabase URL + anon anahtarını gir; motor (n8n) veri yazmaya başlayınca burada görünür.</div>
+      <b data-i18n="intel_connect_b">İstihbarat verisi için Supabase'i bağla.</b>
+      <div class="empty" data-i18n="intel_connect_p">Henüz motor kurulmadıysa burası boş kalır. "Ayarlar" sekmesinden Supabase URL + anon anahtarını gir; motor (n8n) veri yazmaya başlayınca burada görünür.</div>
     </div>
     <div id="intelMain">
       <div class="filters">
-        <input id="iq" placeholder="Ara: başlık/etiket…">
-        <select id="isource"><option value="">Tüm kaynaklar</option></select>
-        <select id="iopp"><option value="">Tüm fırsatlar</option><option>tool</option><option>idea</option><option>lead</option><option>trend</option><option>clone</option></select>
-        <select id="iscore"><option value="0">İlgi: hepsi</option><option value="60">ilgi 60+</option><option value="70">ilgi 70+</option><option value="80">ilgi 80+</option></select>
-        <select id="imoney"><option value="0">Para: hepsi</option><option value="50">💰 50+</option><option value="70">💰 70+</option></select>
-        <label class="chk"><input type="checkbox" id="inew"> YENİ</label>
-        <label class="chk"><input type="checkbox" id="itoday"> Bugün</label>
-        <label class="chk"><input type="checkbox" id="isaved"> ⭐ kayıtlılar</label>
-        <button class="ghost" id="irefresh">Yenile</button>
+        <input id="iq" data-i18n-ph="ph_intel_search" placeholder="Ara: başlık/etiket…">
+        <select id="isource"><option value="" data-i18n="all_sources">Tüm kaynaklar</option></select>
+        <select id="iopp"><option value="" data-i18n="opp_all">Tüm fırsatlar</option><option>tool</option><option>idea</option><option>lead</option><option>trend</option><option>clone</option></select>
+        <select id="iscore"><option value="0" data-i18n="score_all">İlgi: hepsi</option><option value="60" data-i18n="score_60">ilgi 60+</option><option value="70" data-i18n="score_70">ilgi 70+</option><option value="80" data-i18n="score_80">ilgi 80+</option></select>
+        <select id="imoney"><option value="0" data-i18n="money_all">Para: hepsi</option><option value="50">💰 50+</option><option value="70">💰 70+</option></select>
+        <label class="chk"><input type="checkbox" id="inew"> <span data-i18n="f_new">YENİ</span></label>
+        <label class="chk"><input type="checkbox" id="itoday"> <span data-i18n="f_today">Bugün</span></label>
+        <label class="chk"><input type="checkbox" id="isaved"> <span data-i18n="f_saved">⭐ kayıtlılar</span></label>
+        <button class="ghost" id="irefresh" data-i18n="btn_refresh">Yenile</button>
         <span class="count" id="icount"></span>
       </div>
       <div class="grid" id="igrid"></div>
@@ -179,11 +180,11 @@
   <!-- ASK (chat) -->
   <section id="ask" style="display:none">
     <div class="panel">
-      <b>Kütüphanene Sor</b>
-      <div class="empty">Doğal dille sor — 194 kart + tüm istihbarattan sentezlenmiş, kaynaklı cevap.</div>
+      <b data-i18n="ask_b">Kütüphanene Sor</b>
+      <div class="empty" data-i18n="ask_p">Doğal dille sor — 194 kart + tüm istihbarattan sentezlenmiş, kaynaklı cevap.</div>
       <div style="display:flex;gap:8px;margin-top:10px">
-        <input id="askq" placeholder="Örn: görsel→video için hangi API? / Supabase'de auth nasıl?">
-        <button id="askgo">Sor</button>
+        <input id="askq" data-i18n-ph="ph_ask" placeholder="Örn: görsel→video için hangi API? / Supabase'de auth nasıl?">
+        <button id="askgo" data-i18n="btn_ask">Sor</button>
       </div>
       <div id="askout" style="margin-top:14px"></div>
     </div>
@@ -192,19 +193,19 @@
   <!-- SETTINGS -->
   <section id="settings" style="display:none">
     <div class="panel">
-      <b>Supabase bağlantısı</b>
-      <div class="empty">Bu bilgiler sadece bu tarayıcıda saklanır. <code>anon</code> anahtarını kullan (gizli service anahtarını DEĞİL).</div>
-      <label style="margin-top:8px">Supabase URL</label>
+      <b data-i18n="set_b">Supabase bağlantısı</b>
+      <div class="empty" data-i18n="set_p">Bu bilgiler sadece bu tarayıcıda saklanır. <code>anon</code> anahtarını kullan (gizli service anahtarını DEĞİL).</div>
+      <label style="margin-top:8px" data-i18n="set_url">Supabase URL</label>
       <input id="sbUrl" placeholder="https://xxxx.supabase.co">
-      <label style="margin-top:8px">Supabase anon key</label>
+      <label style="margin-top:8px" data-i18n="set_anon">Supabase anon key</label>
       <input id="sbKey" placeholder="eyJ…">
-      <label style="margin-top:8px">Sor webhook URL (kendi n8n adresin) — opsiyonel</label>
+      <label style="margin-top:8px" data-i18n="set_askurl">Sor webhook URL (kendi n8n adresin) — opsiyonel</label>
       <input id="sbAskUrl" placeholder="https://YOUR-n8n-domain/webhook/vektra-ask">
-      <label style="margin-top:8px">Sor anahtarı (webhook key — opsiyonel)</label>
-      <input id="sbAskKey" placeholder="Sor webhook'una token koyduysan buraya yapıştır">
+      <label style="margin-top:8px" data-i18n="set_askkey">Sor anahtarı (webhook key — opsiyonel)</label>
+      <input id="sbAskKey" data-i18n-ph="ph_askkey" placeholder="Sor webhook'una token koyduysan buraya yapıştır">
       <div style="margin-top:10px;display:flex;gap:8px">
-        <button id="sbSave">Kaydet & Bağlan</button>
-        <button class="ghost" id="sbClear">Temizle</button>
+        <button id="sbSave" data-i18n="btn_save">Kaydet & Bağlan</button>
+        <button class="ghost" id="sbClear" data-i18n="btn_clear">Temizle</button>
         <span id="sbStatus" style="align-self:center;font-size:13px;color:var(--muted)"></span>
       </div>
     </div>
@@ -213,28 +214,28 @@
   <!-- SETUP (zero-question onboarding) -->
   <section id="setup" style="display:none">
     <div class="panel">
-      <b>Kurulum rehberi — 4 adım</b>
-      <div class="empty">Bu projeyi sıfırdan kuracaklar için. Sırayla yap, "ne yapacağım?" kalmaz.</div>
+      <b data-i18n="setup_h">Kurulum rehberi — 4 adım</b>
+      <div class="empty" data-i18n="setup_p">Bu projeyi sıfırdan kuracaklar için. Sırayla yap, "ne yapacağım?" kalmaz.</div>
       <ol style="margin:12px 0 0;padding-left:20px;line-height:1.7;font-size:13.5px;color:#c7c7d0">
-        <li><b>Supabase projesi aç</b> — <a href="https://supabase.com" target="_blank" rel="noreferrer">supabase.com</a> (ücretsiz). Yeni proje oluştur, bölge olarak yakınını seç.</li>
-        <li><b>Tabloları oluştur</b> — Supabase panelinde sol menüden <b>SQL Editor</b> → <b>+ New query</b> → aşağıdaki SQL'i <b>📋 Kopyala</b> ile al, kutuya yapıştır → sağ altta <b>Run</b> (veya Ctrl+Enter). Yeşil <b>“Success”</b> görürsen tamamdır. <u>Hepsi tek seferde çalışır</u> — parça parça değil.
-          <div style="margin:9px 0 4px;font-size:12.5px;color:#9aa0c0">Bu tek SQL şu <b>4 şeyi</b> sırayla oluşturur:</div>
-          <ul style="margin:0 0 8px;padding-left:18px;font-size:12.5px;line-height:1.6;color:#c7c7d0">
+        <li data-i18n="setup_s1"><b>Supabase projesi aç</b> — <a href="https://supabase.com" target="_blank" rel="noreferrer">supabase.com</a> (ücretsiz). Yeni proje oluştur, bölge olarak yakınını seç.</li>
+        <li><span data-i18n="setup_s2"><b>Tabloları oluştur</b> — Supabase panelinde sol menüden <b>SQL Editor</b> → <b>+ New query</b> → aşağıdaki SQL'i <b>📋 Kopyala</b> ile al, kutuya yapıştır → sağ altta <b>Run</b> (veya Ctrl+Enter). Yeşil <b>“Success”</b> görürsen tamamdır. <u>Hepsi tek seferde çalışır</u> — parça parça değil.</span>
+          <div style="margin:9px 0 4px;font-size:12.5px;color:#9aa0c0" data-i18n="setup_s2_sub">Bu tek SQL şu <b>4 şeyi</b> sırayla oluşturur:</div>
+          <ul style="margin:0 0 8px;padding-left:18px;font-size:12.5px;line-height:1.6;color:#c7c7d0" data-i18n="setup_s2_list">
             <li><code>vector</code> eklentisi — embedding (anlamsal arama) için</li>
             <li><b>Tablo 1: <code>intel_items</code></b> — motorun her gün topladığı bulgular (puan, özet, para skoru…)</li>
             <li><b>Tablo 2: <code>library_embeddings</code></b> — kalıcı kütüphane kartları (oto-büyüyen katalog buraya yazılır)</li>
             <li><b>Fonksiyon: <code>match_all</code></b> — “Sor” için iki tabloda anlamsal arama · + <b>güvenlik kuralları</b> (RLS)</li>
           </ul>
           <div style="margin:6px 0">
-            <button class="ghost" id="copySql">📋 SQL'i kopyala</button>
+            <button class="ghost" id="copySql" data-i18n="btn_copysql">📋 SQL'i kopyala</button>
             <span id="copySqlOk" style="font-size:12px;color:#22c55e;margin-left:8px"></span>
           </div>
           <pre style="background:#0e0e10;border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;max-height:260px;font-size:11.5px;line-height:1.45"><code id="setupSql"></code></pre>
         </li>
-        <li><b>Anahtarları bağla</b> — Supabase → <b>Settings → API</b> → <code>Project URL</code> + <code>anon public</code> anahtarını kopyala → bu panelde <b>Ayarlar</b> sekmesine yapıştır → Kaydet. (Dashboard'u bağlar.)</li>
-        <li><b>Motoru kur (n8n)</b> — n8n'e <code>00-meta/engine-node.js</code> kodlu bir Code node'lu workflow ekle, <code>CONFIG</code>'e anahtarları gir (Supabase <code>service_role</code>, Anthropic, Gemini, opsiyonel kaynaklar), günlük zamanla + Active yap. Aynı şekilde <code>00-meta/ask-node.js</code> ile "Sor" webhook'unu kur.</li>
+        <li data-i18n="setup_s3"><b>Anahtarları bağla</b> — Supabase → <b>Settings → API</b> → <code>Project URL</code> + <code>anon public</code> anahtarını kopyala → bu panelde <b>Ayarlar</b> sekmesine yapıştır → Kaydet. (Dashboard'u bağlar.)</li>
+        <li data-i18n="setup_s4"><b>Motoru kur (n8n)</b> — n8n'e <code>00-meta/engine-node.js</code> kodlu bir Code node'lu workflow ekle, <code>CONFIG</code>'e anahtarları gir (Supabase <code>service_role</code>, Anthropic, Gemini, opsiyonel kaynaklar), günlük zamanla + Active yap. Aynı şekilde <code>00-meta/ask-node.js</code> ile "Sor" webhook'unu kur.</li>
       </ol>
-      <div class="empty" style="margin-top:10px">Bitince: <b>İstihbarat</b> motorun bulgularıyla, <b>Sor</b> doğal dil aramayla, <b>Kütüphane</b> oto-büyüyen katalogla canlı olur. Detay: repo <code>00-meta/engine-setup-guide.md</code>.</div>
+      <div class="empty" style="margin-top:10px" data-i18n="setup_done">Bitince: <b>İstihbarat</b> motorun bulgularıyla, <b>Sor</b> doğal dil aramayla, <b>Kütüphane</b> oto-büyüyen katalogla canlı olur. Detay: repo <code>00-meta/engine-setup-guide.md</code>.</div>
     </div>
   </section>
 
@@ -243,10 +244,10 @@
 
     <!-- 1) Mimari akış -->
     <div class="panel">
-      <p class="howto-h">⚙️ Sistem tek bakışta</p>
-      <p class="howto-sub">Vektra her sabah interneti senin yerine tarar, okur, puanlar ve kütüphaneni kendi kendine büyütür. Aşağıdaki akış, bir bilginin kaynaktan sana ulaşana kadar geçtiği yolu gösterir — soldan sağa.</p>
+      <p class="howto-h" data-i18n="h_overview">⚙️ Sistem tek bakışta</p>
+      <p class="howto-sub" data-i18n="h_overview_sub">Vektra her sabah interneti senin yerine tarar, okur, puanlar ve kütüphaneni kendi kendine büyütür. Aşağıdaki akış, bir bilginin kaynaktan sana ulaşana kadar geçtiği yolu gösterir — soldan sağa.</p>
 
-      <p class="flow-step">① Kaynaklar — 7 yer</p>
+      <p class="flow-step" data-i18n="h_step1">① Kaynaklar — 7 yer</p>
       <div>
         <span class="srcpill" style="color:#22c55e;border-color:#22c55e">GitHub</span>
         <span class="srcpill" style="color:#f59e0b;border-color:#f59e0b">Hacker News</span>
@@ -256,8 +257,8 @@
         <span class="srcpill" style="color:#ec4899;border-color:#ec4899">Instagram → Apify</span>
       </div>
 
-      <p class="flow-step">② Motordan beyne — her sabah 08:00 (n8n)</p>
-      <div class="flow-row">
+      <p class="flow-step" data-i18n="h_step2">② Motordan beyne — her sabah 08:00 (n8n)</p>
+      <div class="flow-row" data-i18n="h_flow_engine">
         <div class="flow-box"><b>Motor</b><span>n8n iş akışı, günde 1 kez tüm kaynakları tarar (kaynak başına dengeli seçim).</span></div>
         <div class="flow-arrow">→</div>
         <div class="flow-box"><b>Derin Oku</b><span>Sadece başlık değil; gerçek içerik (GitHub README + Firecrawl; yt/ig kendi metnini taşır).</span></div>
@@ -267,18 +268,18 @@
         <div class="flow-box"><b>Embed · Gemini</b><span>768 boyutlu vektör — anlamsal (kelime değil anlam) arama için, kayıt anında.</span></div>
       </div>
 
-      <p class="flow-step">③ Hafıza</p>
-      <div class="flow-row">
+      <p class="flow-step" data-i18n="h_step3">③ Hafıza</p>
+      <div class="flow-row" data-i18n="h_flow_memory">
         <div class="flow-box" style="border-left-color:#3ecf8e"><b>Supabase</b><span><code>intel_items</code> (günlük akış) + <code>library_embeddings</code> (kalıcı kütüphane) + <code>match_all</code> anlamsal arama.</span></div>
       </div>
 
-      <p class="flow-step">④ Sana ulaşır</p>
-      <div class="flow-out">
+      <p class="flow-step" data-i18n="h_step4">④ Sana ulaşır</p>
+      <div class="flow-out" data-i18n="h_flow_out">
         <div class="flow-box"><b>📚 Kütüphane</b><span>Kalıcı, kendi kendine büyüyen katalog.</span></div>
         <div class="flow-box"><b>🛰️ İstihbarat</b><span>Günlük taze bulgu akışı.</span></div>
         <div class="flow-box"><b>💬 Sor</b><span>Doğal dille kaynaklı cevap.</span></div>
       </div>
-      <div class="flow-side" style="margin-top:8px"><div class="flow-row">
+      <div class="flow-side" style="margin-top:8px" data-i18n="h_flow_side"><div class="flow-row">
         <div class="flow-box"><b>📱 WhatsApp özeti</b><span>Her sabah top-5 + “N araç eklendi”.</span></div>
         <div class="flow-box"><b>🔄 GitHub sync · 09:00</b><span>Supabase → repo (.md + registry) yedeği.</span></div>
         <div class="flow-box"><b>🔌 Vektra MCP</b><span>Her projeden merkezî beyne sor.</span></div>
@@ -287,41 +288,41 @@
 
     <!-- 2) Her parça ne yapar -->
     <div class="panel">
-      <p class="howto-h">🧩 Her parça ne yapar</p>
-      <p class="howto-sub">Başlığa tıkla, aç. Her biri sistemin bir dişlisi.</p>
+      <p class="howto-h" data-i18n="h_parts">🧩 Her parça ne yapar</p>
+      <p class="howto-sub" data-i18n="h_parts_sub">Başlığa tıkla, aç. Her biri sistemin bir dişlisi.</p>
 
-      <details class="acc"><summary>7 Kaynak — nereyi tarar</summary><div class="acc-body">GitHub (trend repolar), Hacker News (öne çıkanlar), YouTube (Data API), Product Hunt (yeni ürünler), Reddit ve Instagram (Apify üzerinden — OAuth derdi yok). Hepsi geliştirici/AI dünyasının nabzı. Kaynak başına döngüsel (round-robin) seçim, üst sınır 40 → tek bir kaynak akışı domine etmez.</div></details>
+      <details class="acc" data-i18n="acc_sources"><summary>7 Kaynak — nereyi tarar</summary><div class="acc-body">GitHub (trend repolar), Hacker News (öne çıkanlar), YouTube (Data API), Product Hunt (yeni ürünler), Reddit ve Instagram (Apify üzerinden — OAuth derdi yok). Hepsi geliştirici/AI dünyasının nabzı. Kaynak başına döngüsel (round-robin) seçim, üst sınır 40 → tek bir kaynak akışı domine etmez.</div></details>
 
-      <details class="acc"><summary>Motor (n8n, her sabah)</summary><div class="acc-body">Bir n8n iş akışı günde bir kez çalışır: harvest → derin oku → beyin → embed → Supabase'e yaz → WhatsApp özeti. Sonunda <code>{harvested, stored, embedded, notified}</code> döner. Senin makinen kapalıyken bile bulutta çalışır.</div></details>
+      <details class="acc" data-i18n="acc_engine"><summary>Motor (n8n, her sabah)</summary><div class="acc-body">Bir n8n iş akışı günde bir kez çalışır: harvest → derin oku → beyin → embed → Supabase'e yaz → WhatsApp özeti. Sonunda <code>{harvested, stored, embedded, notified}</code> döner. Senin makinen kapalıyken bile bulutta çalışır.</div></details>
 
-      <details class="acc"><summary>Derin okuma</summary><div class="acc-body">Yüzeysel başlığa göre puan vermez. GitHub için README'yi, web için Firecrawl ile sayfayı gerçekten okur; YouTube/Instagram zaten kendi metnini taşır. Beyin böylece içeriğin <i>özünü</i> değerlendirir.</div></details>
+      <details class="acc" data-i18n="acc_deep"><summary>Derin okuma</summary><div class="acc-body">Yüzeysel başlığa göre puan vermez. GitHub için README'yi, web için Firecrawl ile sayfayı gerçekten okur; YouTube/Instagram zaten kendi metnini taşır. Beyin böylece içeriğin <i>özünü</i> değerlendirir.</div></details>
 
-      <details class="acc"><summary>Beyin — Claude Haiku</summary><div class="acc-body">Her bulguyu okur ve üretir: <b>ilgi puanı (0-100)</b>, kısa <b>özet</b>, <b>“neden önemli”</b>, <b>etiketler</b>, ve <b>para radarı</b> — fırsat türü (tool / idea / lead / trend / clone) + para skoru. Hızlı ve ucuz model (<code>claude-haiku-4-5</code>).</div></details>
+      <details class="acc" data-i18n="acc_brain"><summary>Beyin — Claude Haiku</summary><div class="acc-body">Her bulguyu okur ve üretir: <b>ilgi puanı (0-100)</b>, kısa <b>özet</b>, <b>“neden önemli”</b>, <b>etiketler</b>, ve <b>para radarı</b> — fırsat türü (tool / idea / lead / trend / clone) + para skoru. Hızlı ve ucuz model (<code>claude-haiku-4-5</code>).</div></details>
 
-      <details class="acc"><summary>Embed — Gemini 768</summary><div class="acc-body">Her satır kaydedilirken <code>gemini-embedding-001</code> ile 768 boyutlu bir vektöre çevrilir. Bu sayede “Sor” kelime değil <i>anlam</i> üzerinden eşleştirir (pgvector).</div></details>
+      <details class="acc" data-i18n="acc_embed"><summary>Embed — Gemini 768</summary><div class="acc-body">Her satır kaydedilirken <code>gemini-embedding-001</code> ile 768 boyutlu bir vektöre çevrilir. Bu sayede “Sor” kelime değil <i>anlam</i> üzerinden eşleştirir (pgvector).</div></details>
 
-      <details class="acc"><summary>Supabase — hafıza</summary><div class="acc-body">Bulut veritabanı. <code>intel_items</code> = günlük istihbarat akışı (özet, puan, para skoru, embedding…). <code>library_embeddings</code> = kalıcı kütüphane kartları. <code>match_all</code> RPC iki tabloda birden anlamsal arama yapar. Güvenlik (RLS): dışarıdan sadece okunur + <code>saved</code> güncellenir; motor gizli anahtarla yazar.</div></details>
+      <details class="acc" data-i18n="acc_supabase"><summary>Supabase — hafıza</summary><div class="acc-body">Bulut veritabanı. <code>intel_items</code> = günlük istihbarat akışı (özet, puan, para skoru, embedding…). <code>library_embeddings</code> = kalıcı kütüphane kartları. <code>match_all</code> RPC iki tabloda birden anlamsal arama yapar. Güvenlik (RLS): dışarıdan sadece okunur + <code>saved</code> güncellenir; motor gizli anahtarla yazar.</div></details>
 
-      <details class="acc"><summary>📚 Kütüphane sekmesi</summary><div class="acc-body">Çevrimdışı 194 elle seçilmiş kart + buluttan otomatik büyüyen kartlar (🤖 oto rozeti). Aşama / tür / alan filtreleri. İnternetsiz bile temel katalog açılır.</div></details>
+      <details class="acc" data-i18n="acc_libtab"><summary>📚 Kütüphane sekmesi</summary><div class="acc-body">Çevrimdışı 194 elle seçilmiş kart + buluttan otomatik büyüyen kartlar (🤖 oto rozeti). Aşama / tür / alan filtreleri. İnternetsiz bile temel katalog açılır.</div></details>
 
-      <details class="acc"><summary>🛰️ İstihbarat sekmesi</summary><div class="acc-body">Supabase'den canlı akış. Kaynak / fırsat / ilgi / para / YENİ / Bugün filtreleri. Bir bulguyu beğenince “→ kütüphaneye ekle” ile işaretlersin (saved=true).</div></details>
+      <details class="acc" data-i18n="acc_inteltab"><summary>🛰️ İstihbarat sekmesi</summary><div class="acc-body">Supabase'den canlı akış. Kaynak / fırsat / ilgi / para / YENİ / Bugün filtreleri. Bir bulguyu beğenince “→ kütüphaneye ekle” ile işaretlersin (saved=true).</div></details>
 
-      <details class="acc"><summary>💬 Sor</summary><div class="acc-body">Doğal dille soru → Gemini embed → pgvector ile kütüphane+istihbarat taranır → Haiku <b>kaynaklı</b> Türkçe cevap üretir. Güvenli: kaynaklar yalnızca <i>veri</i> olarak okunur, içlerindeki komutlar ASLA çalıştırılmaz.</div></details>
+      <details class="acc" data-i18n="acc_ask"><summary>💬 Sor</summary><div class="acc-body">Doğal dille soru → Gemini embed → pgvector ile kütüphane+istihbarat taranır → Haiku <b>kaynaklı</b> Türkçe cevap üretir. Güvenli: kaynaklar yalnızca <i>veri</i> olarak okunur, içlerindeki komutlar ASLA çalıştırılmaz.</div></details>
 
-      <details class="acc"><summary>📱 WhatsApp sabah özeti</summary><div class="acc-body">Motor her çalıştığında en yüksek ilgili 5 bulguyu Evolution API ile telefonuna yollar; “📚 N araç kütüphaneye eklendi” bilgisini de iletir. Dashboard'u açmadan günü yakalarsın.</div></details>
+      <details class="acc" data-i18n="acc_whatsapp"><summary>📱 WhatsApp sabah özeti</summary><div class="acc-body">Motor her çalıştığında en yüksek ilgili 5 bulguyu Evolution API ile telefonuna yollar; “📚 N araç kütüphaneye eklendi” bilgisini de iletir. Dashboard'u açmadan günü yakalarsın.</div></details>
 
-      <details class="acc"><summary>🔄 GitHub sync (opsiyonel, günlük)</summary><div class="acc-body">Ayrı bir n8n akışı Supabase kütüphanesini repoya yansıtır (.md kartlar + registry). Veriyi sürüm kontrolünde yedekler — bulut tek nokta hata olmaz.</div></details>
+      <details class="acc" data-i18n="acc_gitsync"><summary>🔄 GitHub sync (opsiyonel, günlük)</summary><div class="acc-body">Ayrı bir n8n akışı Supabase kütüphanesini repoya yansıtır (.md kartlar + registry). Veriyi sürüm kontrolünde yedekler — bulut tek nokta hata olmaz.</div></details>
 
-      <details class="acc"><summary>🔌 Vektra MCP — her projede</summary><div class="acc-body"><code>vektra_ask</code> aracı (saf-Python stdio MCP, kullanıcı kapsamında global kayıtlı) güvenli Sor webhook'unu çağırır. Kütüphaneyi her projeye kopyalamazsın; merkezde tutar, ihtiyaç anında sorarsın. Claude cevabı okur ve senin onayınla ilgili kısmı projeye çeker.</div></details>
+      <details class="acc" data-i18n="acc_mcp"><summary>🔌 Vektra MCP — her projede</summary><div class="acc-body"><code>vektra_ask</code> aracı (saf-Python stdio MCP, kullanıcı kapsamında global kayıtlı) güvenli Sor webhook'unu çağırır. Kütüphaneyi her projeye kopyalamazsın; merkezde tutar, ihtiyaç anında sorarsın. Claude cevabı okur ve senin onayınla ilgili kısmı projeye çeker.</div></details>
 
-      <details class="acc"><summary>🤖 Oto-kütüphaneci — kendi kendine büyüme</summary><div class="acc-body">Motor, nitelikli bulguları doğrudan kütüphaneye ekler. Kapı (gate): <b>ilgi ≥ 80</b> + güvenli tür (library / app / mcp / reference / skill) + geçerli aşama + embedding var + zaten ekli değil. Güvenli: yalnızca beynin sınırlı özeti saklanır (ham içerik / gizli komut değil); kurulum tarifi asla saklanmaz/çalıştırılmaz — kataloglamak ≠ kurmak. Her oto-kart <code>watch</code> durumunda, skiller “🔒 kurmadan incele” rozetli.</div></details>
+      <details class="acc" data-i18n="acc_autolib"><summary>🤖 Oto-kütüphaneci — kendi kendine büyüme</summary><div class="acc-body">Motor, nitelikli bulguları doğrudan kütüphaneye ekler. Kapı (gate): <b>ilgi ≥ 80</b> + güvenli tür (library / app / mcp / reference / skill) + geçerli aşama + embedding var + zaten ekli değil. Güvenli: yalnızca beynin sınırlı özeti saklanır (ham içerik / gizli komut değil); kurulum tarifi asla saklanmaz/çalıştırılmaz — kataloglamak ≠ kurmak. Her oto-kart <code>watch</code> durumunda, skiller “🔒 kurmadan incele” rozetli.</div></details>
     </div>
 
     <!-- 3) Bunu nasıl kullanırım -->
     <div class="panel">
-      <p class="howto-h">🧭 Bunu nasıl kullanırım</p>
-      <p class="howto-sub">Günlük pratik akış — cihaza hâkim olmanın yolu.</p>
-      <ol class="howto-num">
+      <p class="howto-h" data-i18n="h_use">🧭 Bunu nasıl kullanırım</p>
+      <p class="howto-sub" data-i18n="h_use_sub">Günlük pratik akış — cihaza hâkim olmanın yolu.</p>
+      <ol class="howto-num" data-i18n="h_use_list">
         <li><b>Sabah:</b> WhatsApp özetine bak (veya <b>İstihbarat</b> sekmesi → “Bugün” filtresi). Gece ne çıktı, 30 saniyede gör.</li>
         <li><b>Beğendiğini işaretle:</b> ilginç bir bulguda <b>“→ kütüphaneye ekle”</b>. Sonra terminalde <code>python 00-meta/inbox-sync.py</code> → taslak kart <code>99-inbox/</code>'a düşer, incele & kalıcılaştır.</li>
         <li><b>Bir işe başlarken Sor'a sor:</b> örn. “görsel→video için hangi API?” / “Supabase'de auth nasıl?”. Kütüphane + istihbarattan sentezlenmiş, kaynaklı cevap gelir.</li>
@@ -332,14 +333,14 @@
 
     <!-- 4) Canlı durum -->
     <div class="panel">
-      <p class="howto-h">📊 Canlı durum</p>
+      <p class="howto-h" data-i18n="h_live">📊 Canlı durum</p>
       <div id="howtoStat"><div class="empty">Supabase'e bağlıysan canlı sayılar burada görünür. <b>Ayarlar</b> sekmesinden URL + anon anahtarını gir.</div></div>
     </div>
 
     <!-- 5) Güvenlik & maliyet -->
     <div class="panel">
-      <p class="howto-h">🔐 Güvenlik & maliyet</p>
-      <ul class="howto-num" style="list-style:disc">
+      <p class="howto-h" data-i18n="h_sec">🔐 Güvenlik & maliyet</p>
+      <ul class="howto-num" style="list-style:disc" data-i18n="h_sec_list">
         <li><b>Anahtarlar nerede:</b> n8n kimlik bilgilerinde / repo dışı <code>.env</code>'de — git'e ASLA girmez.</li>
         <li><b>Beyin & embed:</b> Claude Haiku (puanlama) + Gemini (embedding). Çoğu kaynak ücretsiz/self-host.</li>
         <li><b>Maliyet:</b> ~<b>$3-8 / ay</b> (günde birkaç sent). Supabase + n8n + Apify free/ucuz katmanlarında.</li>
@@ -358,6 +359,111 @@
 const g = id => document.getElementById(id);
 const REGISTRY = (window.REGISTRY || []);
 
+// ---------- i18n (TR is the default + auto-captured from the DOM; EN is an overlay) ----------
+let LANG = localStorage.getItem("vektra_lang") || "tr";
+const EN = {
+  brand_sub:"Command Center",
+  tab_lib:"Library", tab_intel:"Intel", tab_ask:"Ask", tab_settings:"Settings", tab_setup:"Setup", tab_howto:"How it works",
+  intel_connect_b:"Connect Supabase to see intelligence.",
+  intel_connect_p:"This stays empty until the engine is set up. Enter your Supabase URL + anon key in the \"Settings\" tab; once the engine (n8n) starts writing data it shows up here.",
+  all_sources:"All sources", opp_all:"All opportunities", score_all:"Relevance: all", score_60:"rel 60+", score_70:"rel 70+", score_80:"rel 80+",
+  money_all:"Money: all", f_new:"NEW", f_today:"Today", f_saved:"⭐ saved", btn_refresh:"Refresh",
+  ask_b:"Ask your library", ask_p:"Ask in natural language — a synthesized, cited answer from the library + all intelligence.", btn_ask:"Ask",
+  set_b:"Supabase connection",
+  set_p:"Stored only in this browser. Use the <code>anon</code> key (NOT the secret service key).",
+  set_url:"Supabase URL", set_anon:"Supabase anon key",
+  set_askurl:"Ask webhook URL (your own n8n address) — optional", set_askkey:"Ask token (webhook key — optional)",
+  btn_save:"Save & Connect", btn_clear:"Clear",
+  setup_h:"Setup guide — 4 steps",
+  setup_p:"For anyone setting this up from scratch. Follow in order — no guesswork.",
+  setup_s1:"<b>Create a Supabase project</b> — <a href=\"https://supabase.com\" target=\"_blank\" rel=\"noreferrer\">supabase.com</a> (free). Create a new project, pick the nearest region.",
+  setup_s2:"<b>Create the tables</b> — in Supabase, left menu <b>SQL Editor</b> → <b>+ New query</b> → grab the SQL below with <b>📋 Copy</b>, paste it, then <b>Run</b> (bottom right, or Ctrl+Enter). A green <b>“Success”</b> means done. <u>It all runs at once</u> — not piece by piece.",
+  setup_s2_sub:"This single SQL creates these <b>4 things</b> in order:",
+  setup_s2_list:"<li>the <code>vector</code> extension — for embeddings (semantic search)</li><li><b>Table 1: <code>intel_items</code></b> — the engine's daily findings (score, summary, money score…)</li><li><b>Table 2: <code>library_embeddings</code></b> — permanent library cards (the self-growing catalog lands here)</li><li><b>Function: <code>match_all</code></b> — semantic search across both tables for “Ask” · + <b>security rules</b> (RLS)</li>",
+  btn_copysql:"📋 Copy SQL",
+  setup_s3:"<b>Connect your keys</b> — Supabase → <b>Settings → API</b> → copy the <code>Project URL</code> + <code>anon public</code> key → paste them into the <b>Settings</b> tab here → Save. (Connects the dashboard.)",
+  setup_s4:"<b>Set up the engine (n8n)</b> — add a workflow with a Code node holding <code>00-meta/engine-node.js</code>, fill <code>CONFIG</code> with your keys (Supabase <code>service_role</code>, Anthropic, Gemini, optional sources), schedule it daily + Activate. Do the same with <code>00-meta/ask-node.js</code> for the “Ask” webhook.",
+  setup_done:"When done: <b>Intel</b> fills with the engine's findings, <b>Ask</b> with natural-language search, <b>Library</b> with the self-growing catalog. Details: repo <code>00-meta/engine-setup-guide.md</code>.",
+  h_overview:"⚙️ The system at a glance",
+  h_overview_sub:"Vektra scans, reads and scores the internet for you every morning and grows your library by itself. The flow below shows the path a finding takes from source to you — left to right.",
+  h_step1:"① Sources — 7 places",
+  h_step2:"② From engine to brain — every morning (n8n)",
+  h_flow_engine:"<div class=\"flow-box\"><b>Engine</b><span>n8n workflow, scans all sources once a day (balanced per-source pick).</span></div><div class=\"flow-arrow\">→</div><div class=\"flow-box\"><b>Deep read</b><span>Not just the title; the real content (GitHub README + Firecrawl; yt/ig carry their own text).</span></div><div class=\"flow-arrow\">→</div><div class=\"flow-box\" style=\"border-left-color:#6366f1\"><b>Brain · Claude Haiku</b><span>Summary + relevance score (0-100) + “why it matters” + tags + 💰 money lens.</span></div><div class=\"flow-arrow\">→</div><div class=\"flow-box\"><b>Embed · Gemini</b><span>768-dim vector — for semantic (meaning, not keyword) search, at insert time.</span></div>",
+  h_step3:"③ Memory",
+  h_flow_memory:"<div class=\"flow-box\" style=\"border-left-color:#3ecf8e\"><b>Supabase</b><span><code>intel_items</code> (daily feed) + <code>library_embeddings</code> (permanent library) + <code>match_all</code> semantic search.</span></div>",
+  h_step4:"④ It reaches you",
+  h_flow_out:"<div class=\"flow-box\"><b>📚 Library</b><span>Permanent, self-growing catalog.</span></div><div class=\"flow-box\"><b>🛰️ Intel</b><span>Fresh daily findings feed.</span></div><div class=\"flow-box\"><b>💬 Ask</b><span>Cited natural-language answers.</span></div>",
+  h_flow_side:"<div class=\"flow-row\"><div class=\"flow-box\"><b>📱 WhatsApp brief</b><span>Top-5 each morning + “N tools added”.</span></div><div class=\"flow-box\"><b>🔄 GitHub sync</b><span>Supabase → repo (.md + registry) backup.</span></div><div class=\"flow-box\"><b>🔌 Vektra MCP</b><span>Ask the central brain from any project.</span></div></div>",
+  h_parts:"🧩 What each part does",
+  h_parts_sub:"Click a title to open. Each is a cog in the system.",
+  acc_sources:"<summary>7 Sources — where it scans</summary><div class=\"acc-body\">GitHub (trending repos), Hacker News (top stories), YouTube (Data API), Product Hunt (new products), Reddit & Instagram (via Apify — no OAuth hassle). All the pulse of the dev/AI world. Round-robin pick per source, cap 40 → no single source dominates the feed.</div>",
+  acc_engine:"<summary>Engine (n8n, every morning)</summary><div class=\"acc-body\">An n8n workflow runs once a day: harvest → deep read → brain → embed → write to Supabase → WhatsApp brief. It returns <code>{harvested, stored, embedded, notified}</code>. Runs in the cloud even when your machine is off.</div>",
+  acc_deep:"<summary>Deep reading</summary><div class=\"acc-body\">It doesn't score by the surface title. It actually reads the README for GitHub, the page via Firecrawl for the web; YouTube/Instagram already carry their own text. So the brain judges the <i>essence</i> of the content.</div>",
+  acc_brain:"<summary>Brain — Claude Haiku</summary><div class=\"acc-body\">Reads each finding and produces: <b>relevance score (0-100)</b>, a short <b>summary</b>, <b>“why it matters”</b>, <b>tags</b>, and a <b>money radar</b> — opportunity type (tool / idea / lead / trend / clone) + money score. Fast, cheap model (<code>claude-haiku-4-5</code>).</div>",
+  acc_embed:"<summary>Embed — Gemini 768</summary><div class=\"acc-body\">As each row is saved it's turned into a 768-dim vector with <code>gemini-embedding-001</code>. That's how “Ask” matches by <i>meaning</i>, not keywords (pgvector).</div>",
+  acc_supabase:"<summary>Supabase — memory</summary><div class=\"acc-body\">Cloud database. <code>intel_items</code> = daily intelligence feed (summary, score, money score, embedding…). <code>library_embeddings</code> = permanent library cards. The <code>match_all</code> RPC searches both tables semantically. Security (RLS): read-only from outside + only <code>saved</code> is updatable; the engine writes with the secret key.</div>",
+  acc_libtab:"<summary>📚 Library tab</summary><div class=\"acc-body\">Offline hand-picked cards + cloud auto-grown cards (🤖 auto badge). Stage / type / domain filters. The base catalog opens even with no internet.</div>",
+  acc_inteltab:"<summary>🛰️ Intel tab</summary><div class=\"acc-body\">Live feed from Supabase. Source / opportunity / relevance / money / NEW / Today filters. Like a finding? Mark it with “→ add to library” (saved=true).</div>",
+  acc_ask:"<summary>💬 Ask</summary><div class=\"acc-body\">Natural-language question → Gemini embed → pgvector scans library+intel → Haiku produces a <b>cited</b> answer. Safe: sources are read only as <i>data</i>; any commands inside them are NEVER executed.</div>",
+  acc_whatsapp:"<summary>📱 WhatsApp morning brief</summary><div class=\"acc-body\">Each time the engine runs it sends the top-5 most relevant findings to your phone via the Evolution API; it also reports “📚 N tools added to the library”. Catch the day without opening the dashboard.</div>",
+  acc_gitsync:"<summary>🔄 GitHub sync (optional, daily)</summary><div class=\"acc-body\">A separate n8n flow mirrors the Supabase library back to the repo (.md cards + registry). Versions your data — the cloud isn't a single point of failure.</div>",
+  acc_mcp:"<summary>🔌 Vektra MCP — in every project</summary><div class=\"acc-body\">The <code>vektra_ask</code> tool (pure-Python stdio MCP, registered globally at user scope) calls the secured Ask webhook. You don't copy the library into each project; keep it central, query on demand. Claude reads the answer and, with your approval, pulls the relevant part into the project.</div>",
+  acc_autolib:"<summary>🤖 Auto-librarian — self-growth</summary><div class=\"acc-body\">The engine adds qualifying findings straight into the library. Gate: <b>relevance ≥ 80</b> + safe type (library / app / mcp / reference / skill) + valid stage + has an embedding + not already in. Safe: only the brain's bounded summary is stored (no raw content / hidden commands); the install recipe is never stored/run — cataloguing ≠ installing. Every auto card is <code>watch</code>; skills get a “🔒 review before installing” badge.</div>",
+  h_use:"🧭 How I use it",
+  h_use_sub:"Daily practical flow — the way to master the device.",
+  h_use_list:"<li><b>Morning:</b> check the WhatsApp brief (or the <b>Intel</b> tab → “Today” filter). See what came overnight in 30 seconds.</li><li><b>Mark what you like:</b> on an interesting finding hit <b>“→ add to library”</b>. Then run <code>python 00-meta/inbox-sync.py</code> in the terminal → a draft card lands in <code>99-inbox/</code>; review & make it permanent.</li><li><b>Starting a task, ask Ask:</b> e.g. “which API for image→video?” / “auth on Supabase?”. You get a synthesized, cited answer from library + intel.</li><li><b>In other projects:</b> tell Claude <i>“ask vektra: …”</i> → <b>MCP</b> queries the central brain, brings the best tool/source and pulls it into your project with your approval. No need to copy the library.</li><li><b>Even if you do nothing:</b> the library <b>grows itself</b> (relevance ≥ 80 + safe type + valid stage → auto card, 🤖 badge). You just use it.</li>",
+  h_live:"📊 Live status",
+  h_sec:"🔐 Security & cost",
+  h_sec_list:"<li><b>Where keys live:</b> in n8n credentials / a repo-external <code>.env</code> — NEVER in git.</li><li><b>Brain & embed:</b> Claude Haiku (scoring) + Gemini (embedding). Most sources free/self-host.</li><li><b>Cost:</b> ~<b>$3-8 / month</b> (a few cents a day). On the free/cheap tiers of Supabase + n8n + Apify.</li><li><b>Access:</b> you can put the site behind <b>Basic Auth</b>; the “Ask” webhook is token-protected.</li><li><b>Data security (RLS):</b> from outside, anon only <i>reads</i> + updates <code>saved</code>; writes only with the engine's secret service key.</li>",
+};
+const EN_PH = {
+  ph_lib_search:"Search tools…", ph_intel_search:"Search title/tag…",
+  ph_ask:"e.g. which API for image→video? / how to do auth on Supabase?",
+  ph_askkey:"paste here if you set a token on the Ask webhook",
+};
+const DYN = {
+  tr:{ conn_on:"● bağlı: ", conn_off:"○ Supabase bağlı değil", all_stages:"Tüm aşamalar", all_types:"Tüm türler", all_domains:"Tüm alanlar",
+       all_sources:"Tüm kaynaklar", auto:" oto", review:"🔒 kurmadan incele", new_badge:"YENİ", loading:"yükleniyor…", today:"bugün",
+       no_result:"Sonuç yok. Motor çalışınca bulgular burada görünür.",
+       intel_fail:"Bağlanılamadı", intel_fail2:"Ayarlar’dan URL/anon anahtarı kontrol et. (Supabase RLS: anon SELECT açık olmalı.)",
+       lib_cand:"✓ kütüphaneye aday", lib_add:"→ kütüphaneye ekle",
+       toast_marked:"İşaretlendi ✓ — terminalde <code>python 00-meta/inbox-sync.py</code> çalıştır; taslak kart <code>99-inbox/</code>'a düşer.",
+       save_failed:"Kaydedilemedi: ",
+       ask_need_url:"Önce <b>Ayarlar</b> sekmesinden <b>Sor webhook URL</b>’ini gir (kendi n8n vektra-ask webhook adresin).",
+       ask_thinking:"Düşünüyor… kütüphane + istihbarat taranıyor (~20-40 sn).", ask_err:"Hata: ", ask_err2:" (internet / webhook?).",
+       sb_saved:"Kaydedildi. İstihbarat sekmesini aç.", sb_cleared:"Temizlendi.", copied:"kopyalandı ✓", copysel:"metni seç + Ctrl-C",
+       hs_lib:"📚 kütüphane kartı", hs_intel:"🛰️ istihbarat satırı", hs_updated:"son güncelleme", hs_loading:"Canlı sayılar yükleniyor…",
+       hs_note:"Motor her sabah 08:00'de çalışır; sayılar otomatik artar.",
+       hs_fail:"Canlı durum alınamadı", hs_fail2:"Ayarlar'dan bağlantıyı kontrol et.",
+       hs_connect:"Supabase'e bağlıysan canlı sayılar burada görünür. <b>Ayarlar</b> sekmesinden URL + anon anahtarını gir." },
+  en:{ conn_on:"● connected: ", conn_off:"○ Supabase not connected", all_stages:"All stages", all_types:"All types", all_domains:"All domains",
+       all_sources:"All sources", auto:" auto", review:"🔒 review before install", new_badge:"NEW", loading:"loading…", today:"today",
+       no_result:"No results. Findings show here once the engine runs.",
+       intel_fail:"Couldn't connect", intel_fail2:"Check the URL/anon key in Settings. (Supabase RLS: anon SELECT must be open.)",
+       lib_cand:"✓ library candidate", lib_add:"→ add to library",
+       toast_marked:"Marked ✓ — run <code>python 00-meta/inbox-sync.py</code> in the terminal; a draft card lands in <code>99-inbox/</code>.",
+       save_failed:"Couldn't save: ",
+       ask_need_url:"First set the <b>Ask webhook URL</b> in the <b>Settings</b> tab (your own n8n vektra-ask webhook address).",
+       ask_thinking:"Thinking… scanning library + intel (~20-40s).", ask_err:"Error: ", ask_err2:" (internet / webhook?).",
+       sb_saved:"Saved. Open the Intel tab.", sb_cleared:"Cleared.", copied:"copied ✓", copysel:"select text + Ctrl-C",
+       hs_lib:"📚 library cards", hs_intel:"🛰️ intel rows", hs_updated:"last update", hs_loading:"Loading live numbers…",
+       hs_note:"The engine runs every morning; the numbers grow automatically.",
+       hs_fail:"Couldn't load live status", hs_fail2:"Check the connection in Settings.",
+       hs_connect:"Connected to Supabase? Live numbers show here. Enter your URL + anon key in the <b>Settings</b> tab." }
+};
+const t = k => (DYN[LANG] && DYN[LANG][k] != null) ? DYN[LANG][k] : (DYN.tr[k] || "");
+function applyI18n(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    if(el.dataset._tr==null) el.dataset._tr = el.innerHTML;
+    el.innerHTML = (LANG==="en" && EN[el.dataset.i18n]!=null) ? EN[el.dataset.i18n] : el.dataset._tr;
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
+    if(el.dataset._trph==null) el.dataset._trph = el.getAttribute("placeholder")||"";
+    el.setAttribute("placeholder",(LANG==="en" && EN_PH[el.dataset.i18nPh]!=null) ? EN_PH[el.dataset.i18nPh] : el.dataset._trph);
+  });
+  document.documentElement.lang = LANG;
+}
+
 // ---------- tabs ----------
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
@@ -373,7 +479,7 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
 let LIB = REGISTRY.slice();
 function uniq(k){ return [...new Set(LIB.map(r => r[k]).filter(Boolean))].sort(); }
 function fill(el, k, lbl){ const cur=el.value; el.innerHTML = '<option value="">'+lbl+'</option>' + uniq(k).map(v => "<option>"+v+"</option>").join(""); el.value=cur; }
-function fillLibFilters(){ fill(g("lstage"),"stage","Tüm aşamalar"); fill(g("ltype"),"type","Tüm türler"); fill(g("ldomain"),"domain","Tüm alanlar"); }
+function fillLibFilters(){ fill(g("lstage"),"stage",t("all_stages")); fill(g("ltype"),"type",t("all_types")); fill(g("ldomain"),"domain",t("all_domains")); }
 fillLibFilters();
 const stc = {active:"#22c55e",watch:"#eab308",deprecated:"#ef4444"};
 function renderLib(){
@@ -381,13 +487,13 @@ function renderLib(){
   const rows = LIB.filter(r => (!fs||r.stage===fs)&&(!ft||r.type===ft)&&(!fd||r.domain===fd)&&
     (!q||(r.name||"").toLowerCase().includes(q)||(r.domain||"").toLowerCase().includes(q)));
   const autoN = LIB.filter(r=>r.auto).length;
-  g("lcount").textContent = rows.length+" / "+LIB.length+(autoN?" · 🤖 "+autoN+" oto":"");
+  g("lcount").textContent = rows.length+" / "+LIB.length+(autoN?" · 🤖 "+autoN+t("auto"):"");
   g("lgrid").innerHTML = rows.map(r => {
     const c = stc[r.status]||"#9a9aa3";
     const tags = [r.stage,r.type,r.domain,r.cost,r.conn_type].filter(Boolean).map(t=>'<span class="tag">'+t+'</span>').join("");
     return '<div class="card"><span class="src" style="color:'+c+';border-color:'+c+'">'+(r.status||"watch")+'</span>'
-      +(r.auto?'<span class="new" style="color:#a5b4fc;border-color:#a5b4fc">🤖 oto</span>':'')
-      +(r.type==='skill'?'<span class="new" style="color:#fbbf24;border-color:#fbbf24">🔒 kurmadan incele</span>':'')
+      +(r.auto?'<span class="new" style="color:#a5b4fc;border-color:#a5b4fc">🤖'+t("auto")+'</span>':'')
+      +(r.type==='skill'?'<span class="new" style="color:#fbbf24;border-color:#fbbf24">'+t("review")+'</span>':'')
       +'<a class="ttl" href="'+r.source_url+'" target="_blank" rel="noreferrer">'+r.name+'</a>'
       +'<div class="tags">'+tags+'</div></div>';
   }).join("");
@@ -412,15 +518,15 @@ renderLib();
 
 // ---------- supabase settings ----------
 const CFG = JSON.parse(localStorage.getItem("vektra_sb") || "{}");
-function setConn(){ g("conn").textContent = CFG.url ? ("● bağlı: "+CFG.url.replace(/^https?:\/\//,"").slice(0,28)) : "○ Supabase bağlı değil"; }
+function setConn(){ g("conn").textContent = CFG.url ? (t("conn_on")+CFG.url.replace(/^https?:\/\//,"").slice(0,28)) : t("conn_off"); }
 setConn();
 loadCloudLib();
 g("sbUrl").value = CFG.url || ""; g("sbKey").value = CFG.key || ""; g("sbAskUrl").value = CFG.askUrl || ""; g("sbAskKey").value = CFG.askKey || "";
 g("sbSave").addEventListener("click", () => {
   CFG.url = g("sbUrl").value.trim().replace(/\/$/,""); CFG.key = g("sbKey").value.trim(); CFG.askUrl = g("sbAskUrl").value.trim().replace(/\/$/,""); CFG.askKey = g("sbAskKey").value.trim();
   localStorage.setItem("vektra_sb", JSON.stringify(CFG)); setConn(); loadCloudLib();
-  g("sbStatus").textContent = "Kaydedildi. İstihbarat sekmesini aç."; });
-g("sbClear").addEventListener("click", () => { localStorage.removeItem("vektra_sb"); CFG.url=CFG.key=""; g("sbUrl").value=g("sbKey").value=""; setConn(); g("sbStatus").textContent="Temizlendi."; });
+  g("sbStatus").textContent = t("sb_saved"); });
+g("sbClear").addEventListener("click", () => { localStorage.removeItem("vektra_sb"); CFG.url=CFG.key=""; g("sbUrl").value=g("sbKey").value=""; setConn(); g("sbStatus").textContent=t("sb_cleared"); });
 
 // ---------- intelligence tab (live from Supabase REST) ----------
 let INTEL = [];
@@ -433,17 +539,17 @@ async function sbFetch(){
 async function loadIntel(){
   if (!CFG.url || !CFG.key) { g("intelConnect").style.display="block"; g("intelMain").style.display="none"; return; }
   g("intelConnect").style.display="none"; g("intelMain").style.display="block";
-  g("icount").textContent = "yükleniyor…";
+  g("icount").textContent = t("loading");
   try {
     const fetched = await sbFetch();
     const byUrl = {};  // dedupe by URL (keep highest relevance)
     for (const it of fetched) { const k = it.external_url; if (!byUrl[k] || (it.relevance_score||0) > (byUrl[k].relevance_score||0)) byUrl[k] = it; }
     INTEL = Object.values(byUrl);
     const srcs = [...new Set(INTEL.map(i=>i.source_id).filter(Boolean))].sort();
-    g("isource").innerHTML = '<option value="">Tüm kaynaklar</option>' + srcs.map(s=>"<option>"+s+"</option>").join("");
+    g("isource").innerHTML = '<option value="">'+t("all_sources")+'</option>' + srcs.map(s=>"<option>"+s+"</option>").join("");
     renderIntel();
   } catch (e) {
-    g("igrid").innerHTML = '<div class="empty">Bağlanılamadı ('+e.message+'). Ayarlar’dan URL/anon anahtarı kontrol et. (Supabase RLS: anon SELECT açık olmalı.)</div>';
+    g("igrid").innerHTML = '<div class="empty">'+t("intel_fail")+' ('+e.message+'). '+t("intel_fail2")+'</div>';
     g("icount").textContent = "";
   }
 }
@@ -455,7 +561,7 @@ async function toggleSave(id, val){
       body: JSON.stringify({ saved: val }) });
     const it = INTEL.find(x => x.id == id); if (it) it.saved = val;
     renderIntel();
-  } catch (e) { alert("Kaydedilemedi: " + e.message); }
+  } catch (e) { alert(t("save_failed") + e.message); }
 }
 const OPPC = {tool:"#34d399",idea:"#f0abfc",lead:"#60a5fa",trend:"#fbbf24",clone:"#fb7185"};
 function isToday(ts){ if(!ts) return false; return String(ts).slice(0,10) === new Date().toISOString().slice(0,10); }
@@ -469,7 +575,7 @@ function renderIntel(){
     (!onlyNew || d.is_new) && (!onlySaved || d.saved) && (!onlyToday || isToday(d.created_at)) &&
     (!q || (d.text||"").toLowerCase().includes(q) || (d.tags||[]).join(" ").toLowerCase().includes(q)));
   const todayN = INTEL.filter(d=>isToday(d.created_at)).length;
-  g("icount").textContent = rows.length+" / "+INTEL.length+(todayN?" · bugün "+todayN:"");
+  g("icount").textContent = rows.length+" / "+INTEL.length+(todayN?" · "+t("today")+" "+todayN:"");
   const sc = {github:"#22c55e",hackernews:"#f59e0b",devto:"#a78bfa",youtube:"#ef4444",instagram:"#ec4899",producthunt:"#da552f",reddit:"#ff4500"};
   g("igrid").innerHTML = rows.map(d => {
     const c = sc[d.source_id]||"#9a9aa3";
@@ -478,14 +584,14 @@ function renderIntel(){
     return '<div class="card">'
       + '<span class="score">'+(d.relevance_score!=null?d.relevance_score:'–')+(d.money_score!=null?' · 💰'+d.money_score:'')+'</span>'
       + '<button class="star '+(d.saved?"on":"")+'" data-id="'+d.id+'" data-v="'+(d.saved?0:1)+'">'+(d.saved?"★":"☆")+'</button>'
-      + '<span class="src" style="color:'+c+';border-color:'+c+'">'+(d.source_id||"")+'</span>'+(d.is_new?'<span class="new">YENİ</span>':'')+(d.opportunity_type?'<span class="opp" style="color:'+oc+';border-color:'+oc+'55">'+d.opportunity_type+'</span>':'')
+      + '<span class="src" style="color:'+c+';border-color:'+c+'">'+(d.source_id||"")+'</span>'+(d.is_new?'<span class="new">'+t("new_badge")+'</span>':'')+(d.opportunity_type?'<span class="opp" style="color:'+oc+';border-color:'+oc+'55">'+d.opportunity_type+'</span>':'')
       + '<a class="ttl" href="'+d.external_url+'" target="_blank" rel="noreferrer">'+(d.text||"").replace(/</g,"&lt;").slice(0,150)+'</a>'
       + (d.summary?'<div class="summary">'+d.summary.replace(/</g,"&lt;")+'</div>':'')
       + (d.why_it_matters?'<div class="why">→ '+d.why_it_matters.replace(/</g,"&lt;")+'</div>':'')
       + '<div class="tags">'+tags+'</div>'
-      + '<button class="promote '+(d.saved?"done":"")+'" data-id="'+d.id+'">'+(d.saved?"✓ kütüphaneye aday":"→ kütüphaneye ekle")+'</button>'
+      + '<button class="promote '+(d.saved?"done":"")+'" data-id="'+d.id+'">'+(d.saved?t("lib_cand"):t("lib_add"))+'</button>'
       + '</div>';
-  }).join("") || '<div class="empty">Sonuç yok. Motor çalışınca bulgular burada görünür.</div>';
+  }).join("") || '<div class="empty">'+t("no_result")+'</div>';
 }
 let toastT;
 function toast(msg){ const t=g("toast"); t.innerHTML=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),5000); }
@@ -496,7 +602,7 @@ g("igrid").addEventListener("click", e => {
   if (pro) {
     const it = INTEL.find(x=>x.id==pro.dataset.id); if(!it) return;
     if (!it.saved) toggleSave(pro.dataset.id, true);
-    toast("İşaretlendi ✓ — terminalde <code>python 00-meta/inbox-sync.py</code> çalıştır; taslak kart <code>99-inbox/</code>'a düşer.");
+    toast(t("toast_marked"));
   }
 });
 ["iq","isource","iopp","iscore","imoney","inew","itoday","isaved"].forEach(id=>g(id).addEventListener("input",renderIntel));
@@ -504,16 +610,16 @@ g("igrid").addEventListener("click", e => {
 // ---------- ask (chat over library + intel via YOUR n8n webhook; set the URL in Ayarlar) ----------
 async function ask(){
   const q = g("askq").value.trim(); if(!q) return;
-  if(!CFG.askUrl){ g("askout").innerHTML = '<div class="empty">Önce <b>Ayarlar</b> sekmesinden <b>Sor webhook URL</b>’ini gir (kendi n8n vektra-ask webhook adresin).</div>'; return; }
+  if(!CFG.askUrl){ g("askout").innerHTML = '<div class="empty">'+t("ask_need_url")+'</div>'; return; }
   g("askgo").disabled = true;
-  g("askout").innerHTML = '<div class="empty">Düşünüyor… kütüphane + istihbarat taranıyor (~20-40 sn).</div>';
+  g("askout").innerHTML = '<div class="empty">'+t("ask_thinking")+'</div>';
   try{
     const r = await fetch(CFG.askUrl + "?q=" + encodeURIComponent(q) + (CFG.askKey ? "&key=" + encodeURIComponent(CFG.askKey) : ""));
     const d = await r.json();
     const ans = (d.answer||"").replace(/</g,"&lt;").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/^#+\s*(.+)$/gm,"<b>$1</b>").replace(/\n/g,"<br>");
     const src = (d.sources||[]).map(s=>'<a class="tag" href="'+s.url+'" target="_blank" rel="noreferrer">'+(s.kind==="library"?"📚 ":"🛰️ ")+(s.name||"").slice(0,42)+'</a>').join(" ");
     g("askout").innerHTML = '<div class="panel" style="background:#0e0e10"><div style="line-height:1.55">'+ans+'</div>'+(src?'<div class="tags" style="margin-top:12px">'+src+'</div>':'')+'</div>';
-  }catch(e){ g("askout").innerHTML = '<div class="empty">Hata: '+e.message+' (internet / webhook?).</div>'; }
+  }catch(e){ g("askout").innerHTML = '<div class="empty">'+t("ask_err")+e.message+t("ask_err2")+'</div>'; }
   g("askgo").disabled = false;
 }
 g("askgo").addEventListener("click", ask);
@@ -590,8 +696,8 @@ drop policy if exists lib_anon_read on library_embeddings;
 create policy lib_anon_read on library_embeddings for select to anon using (true);`;
 g("setupSql").textContent = SETUP_SQL;
 g("copySql").addEventListener("click", async () => {
-  try{ await navigator.clipboard.writeText(SETUP_SQL); g("copySqlOk").textContent = "kopyalandı ✓"; }
-  catch(e){ const r=document.createRange(); r.selectNode(g("setupSql")); getSelection().removeAllRanges(); getSelection().addRange(r); g("copySqlOk").textContent="metni seç + Ctrl-C"; }
+  try{ await navigator.clipboard.writeText(SETUP_SQL); g("copySqlOk").textContent = t("copied"); }
+  catch(e){ const r=document.createRange(); r.selectNode(g("setupSql")); getSelection().removeAllRanges(); getSelection().addRange(r); g("copySqlOk").textContent=t("copysel"); }
   setTimeout(()=>g("copySqlOk").textContent="",3000);
 });
 
@@ -608,10 +714,10 @@ async function sbCount(table, col){
 async function loadHowto(){
   const box = g("howtoStat");
   if(!CFG.url||!CFG.key){
-    box.innerHTML = '<div class="empty">Supabase\'e bağlıysan canlı sayılar burada görünür. <b>Ayarlar</b> sekmesinden URL + anon anahtarını gir.</div>';
+    box.innerHTML = '<div class="empty">'+t("hs_connect")+'</div>';
     return;
   }
-  box.innerHTML = '<div class="empty">Canlı sayılar yükleniyor…</div>';
+  box.innerHTML = '<div class="empty">'+t("hs_loading")+'</div>';
   try{
     const [lib, intel] = await Promise.all([sbCount("library_embeddings","name"), sbCount("intel_items","id")]);
     let last = "—";
@@ -623,15 +729,25 @@ async function loadHowto(){
     }catch(e){}
     box.innerHTML =
       '<div class="stat-row">'
-      + '<div class="stat"><b>'+(lib!=null?lib:"—")+'</b><span>📚 kütüphane kartı</span></div>'
-      + '<div class="stat"><b>'+(intel!=null?intel:"—")+'</b><span>🛰️ istihbarat satırı</span></div>'
-      + '<div class="stat"><b>'+last+'</b><span>son güncelleme</span></div>'
+      + '<div class="stat"><b>'+(lib!=null?lib:"—")+'</b><span>'+t("hs_lib")+'</span></div>'
+      + '<div class="stat"><b>'+(intel!=null?intel:"—")+'</b><span>'+t("hs_intel")+'</span></div>'
+      + '<div class="stat"><b>'+last+'</b><span>'+t("hs_updated")+'</span></div>'
       + '</div>'
-      + '<div class="empty" style="margin-top:8px">Motor her sabah 08:00\'de çalışır; sayılar otomatik artar.</div>';
+      + '<div class="empty" style="margin-top:8px">'+t("hs_note")+'</div>';
   }catch(e){
-    box.innerHTML = '<div class="empty">Canlı durum alınamadı ('+e.message+'). Ayarlar\'dan bağlantıyı kontrol et.</div>';
+    box.innerHTML = '<div class="empty">'+t("hs_fail")+' ('+e.message+'). '+t("hs_fail2")+'</div>';
   }
 }
+
+// ---------- language switch ----------
+g("lang").value = LANG;
+g("lang").addEventListener("change", ()=>{
+  LANG = g("lang").value; localStorage.setItem("vektra_lang", LANG);
+  applyI18n(); setConn(); fillLibFilters(); renderLib();
+  if (INTEL.length) renderIntel();
+  if (g("howto").style.display !== "none") loadHowto();
+});
+applyI18n();
 </script>
 </body>
 </html>
