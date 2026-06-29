@@ -1,0 +1,122 @@
+# Modules registry — the extensible plug-in list for the engine.
+# Philosophy: grow the toolset freely, but every tool earns its place.
+#   - FREE backbone modules: default_enabled true  (cost 0, always-on, no quota cliff)
+#   - PAID modules: default_enabled false (opt-in; flip on when value > cost)
+# Adding a tool = add a row here + a node in the n8n flow. Removing = flip false.
+# n8n reads this list (or mirrors it as a Set node) to know what to run.
+
+version: 1
+
+# ---------------- SOURCES (where raw items come from) ----------------
+sources:
+  - id: github
+    kind: source
+    cost: free
+    default_enabled: true
+    value: highest-signal dev tools/repos; trust signals (stars, last commit)
+    endpoint: https://api.github.com/search/repositories?q={{kw}}&sort=stars
+    auth: optional   # GITHUB_TOKEN raises limit 60->5000/h
+
+  - id: hackernews
+    kind: source
+    cost: free
+    default_enabled: true
+    value: Show HN launches + high-quality discussion
+    endpoint: https://hn.algolia.com/api/v1/search?query={{kw}}&tags=story
+    auth: none
+
+  - id: devto
+    kind: source
+    cost: free
+    default_enabled: true
+    value: developer articles/tutorials by tag
+    endpoint: https://dev.to/api/articles?tag={{tag}}&per_page=8&top=90
+    auth: none
+
+  - id: reddit
+    kind: source
+    cost: free
+    default_enabled: true
+    value: community-voted tools (r/webdev, r/SideProject, r/selfhosted, r/n8n)
+    endpoint: https://oauth.reddit.com/r/{{sub}}/new
+    auth: oauth      # public .json is blocked server-side; use OAuth
+
+  - id: rss
+    kind: source
+    cost: free
+    default_enabled: true
+    value: curated weekly roundups (TLDR, Latent Space, daily.dev)
+    endpoint: rss-list-in-sources.yaml
+    auth: none
+
+  - id: producthunt
+    kind: source
+    cost: free
+    default_enabled: false   # noisy; enable when hunting launches
+    value: new SaaS/AI tool launches
+    endpoint: https://api.producthunt.com/v2/api/graphql
+    auth: token
+
+  - id: instagram_apify
+    kind: source
+    cost: paid               # ~$2/1000 results
+    default_enabled: false   # OPT-IN: visual/community content; ban/legal risk
+    value: design/UI infographics + community trends (needs vision step)
+    endpoint: https://api.apify.com/v2/acts/apify~instagram-hashtag-scraper/runs
+    auth: token              # APIFY_TOKEN
+    note: weekly poll only; supplement, never backbone (see sources.yaml RISK)
+
+# ---------------- BRAIN (understanding layer) ----------------
+brain:
+  - id: ollama
+    kind: brain
+    cost: free
+    default_enabled: true
+    value: per-item summary/score/tags on every item (local, zero cost)
+    model: llama3.2          # reasoning
+    embed_model: nomic-embed-text
+    endpoint: "{{OLLAMA_URL}}/api/generate"
+
+  - id: claude_haiku
+    kind: brain
+    cost: paid               # ~few $/month at this volume
+    default_enabled: true    # tiny usage: only escalations + daily brief
+    value: sharper scoring on high-value items + daily synthesis
+    model: claude-haiku-4-5
+    via: litellm
+    endpoint: "{{LITELLM_URL}}/v1/chat/completions"
+
+  - id: vision
+    kind: brain
+    cost: free
+    default_enabled: false   # enable only with instagram_apify (images present)
+    value: extract text/info from infographic images
+    model: llama3.2-vision:11b
+    endpoint: "{{OLLAMA_URL}}/api/generate"
+
+# ---------------- STORE ----------------
+store:
+  - id: supabase
+    kind: store
+    cost: free               # self-hosted on Coolify
+    default_enabled: true
+    value: relational mirror + dashboard read + saved items (intel-schema.sql)
+  - id: qdrant
+    kind: store
+    cost: free               # self-hosted
+    default_enabled: true
+    value: vector store for semantic search + dedup (collection "intel")
+
+# ---------------- DELIVERY ----------------
+delivery:
+  - id: whatsapp
+    kind: delivery
+    cost: free               # Evolution API, self-hosted
+    default_enabled: true
+    value: daily brief to phone (top picks)
+    endpoint: "{{EVOLUTION_URL}}/message/sendText"
+  - id: dashboard
+    kind: delivery
+    cost: free
+    default_enabled: true
+    value: zero-install HTML reading Supabase REST (intel/dashboard.html)

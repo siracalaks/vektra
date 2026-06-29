@@ -1,0 +1,405 @@
+# Vektra Resource Library — Source Catalog
+# The canonical record of WHERE the library's raw information comes from.
+# The n8n ingestion engine reads this file to know what to poll, how, and how
+# often. Discovery sources FIND new tools; enrichment sources SCORE them.
+#
+# Coverage strategy (why these tiers together = comprehensive):
+#   Tier 1 (canonical registries) -> completeness  (the full universe of tools)
+#   Tier 2 (curated lists)        -> quality filter (human-vetted picks)
+#   Tier 3 (trending/social)      -> freshness      (what's new this week)
+#   Tier 4 (news/RSS)             -> context        (why it matters)
+# Every candidate is de-duplicated across ALL tiers by canonical key
+# (github repo URL | npm package | pypi package | mcp server name).
+#
+# Defensive notes:
+#   - Official MCP Registry is PREVIEW: store your own copy, poll hourly max.
+#   - Tighten Tier 3 by stars/topic if the inbox gets noisy.
+#   - Respect each API's rate limit; cache responses keyed on updated_since.
+
+meta:
+  version: 1
+  dedup_keys: [github_url, npm_package, pypi_package, mcp_server_name]
+  default_poll: daily
+
+# ---------------------------------------------------------------------------
+# TIER 1 — Canonical registries (API). Goal: completeness.
+# ---------------------------------------------------------------------------
+tier1_registries:
+  - id: mcp-official-registry
+    name: Official MCP Registry
+    tier: 1
+    category: mcp
+    access: api
+    endpoint: https://registry.modelcontextprotocol.io/v0.1/servers?updated_since={{lastRun_RFC3339}}
+    auth_required: false
+    poll_freq: hourly        # preview API, incremental sync via updated_since
+    surfaces: new/updated MCP servers (canonical source of truth)
+    trust_signals: [official_listing]
+    notes: PREVIEW — breaking changes/data resets possible; keep local copy.
+
+  - id: npm-registry
+    name: npm Registry API
+    tier: 1
+    category: library
+    access: api
+    endpoint: https://registry.npmjs.org/-/v1/search?text={{query}}&size=50
+    auth_required: false
+    poll_freq: daily
+    surfaces: npm packages by keyword (auth, payments, queue, etc.)
+    trust_signals: [npm_package]
+
+  - id: pypi
+    name: PyPI
+    tier: 1
+    category: library
+    access: api
+    endpoint: https://pypi.org/pypi/{{package}}/json
+    auth_required: false
+    poll_freq: daily
+    surfaces: Python packages (agent/RAG frameworks, ML tooling)
+    trust_signals: [pypi_package]
+
+  - id: pulsemcp
+    name: PulseMCP
+    tier: 1
+    category: mcp
+    access: api
+    endpoint: https://api.pulsemcp.com/v0beta/servers
+    auth_required: false
+    poll_freq: daily
+    surfaces: curated + trending MCP servers (hand-reviewed)
+    trust_signals: [curated_listing]
+
+  - id: glama
+    name: Glama MCP Directory
+    tier: 1
+    category: mcp
+    access: api
+    endpoint: https://glama.ai/mcp/servers
+    auth_required: false
+    poll_freq: daily
+    surfaces: large MCP server index with owner-verified tiers
+    trust_signals: [owner_verified]
+
+  - id: smithery
+    name: Smithery
+    tier: 1
+    category: mcp
+    access: api
+    endpoint: https://smithery.ai/api
+    auth_required: maybe         # some endpoints need a key
+    poll_freq: daily
+    surfaces: hosted + local MCP servers (CLI-installable)
+    trust_signals: [install_count]
+
+  - id: mcp-so
+    name: mcp.so
+    tier: 1
+    category: mcp
+    access: scrape
+    endpoint: https://mcp.so
+    auth_required: false
+    poll_freq: weekly
+    surfaces: large browseable MCP directory
+    trust_signals: [listing]
+
+  - id: agentskills-directory
+    name: agentskills.io / agensi.io
+    tier: 1
+    category: skill
+    access: api
+    endpoint: https://agensi.io
+    auth_required: false
+    poll_freq: daily
+    surfaces: Claude/agent skills (agentskills.io spec directory)
+    trust_signals: [listing]
+
+  - id: claude-plugins-official
+    name: anthropics/claude-plugins-official
+    tier: 1
+    category: skill
+    access: git
+    endpoint: https://github.com/anthropics/claude-plugins-official
+    auth_required: false
+    poll_freq: daily
+    surfaces: official Claude plugin/skill marketplace
+    trust_signals: [official_listing, github_url]
+
+# ---------------------------------------------------------------------------
+# TIER 2 — Curated lists (git poll). Goal: quality filter.
+# ---------------------------------------------------------------------------
+tier2_curated:
+  - id: awesome-mcp-servers
+    name: punkpeye/awesome-mcp-servers
+    tier: 2
+    category: mcp
+    access: git
+    endpoint: https://github.com/punkpeye/awesome-mcp-servers
+    auth_required: false
+    poll_freq: daily          # poll commits / diff the README
+    surfaces: canonical curated MCP server list
+    trust_signals: [github_url, curated_listing]
+
+  - id: awesome-claude-code
+    name: awesome-claude-code
+    tier: 2
+    category: skill
+    access: git
+    endpoint: https://github.com/hesreallyhim/awesome-claude-code
+    auth_required: false
+    poll_freq: daily
+    surfaces: curated Claude Code commands/skills/workflows
+    trust_signals: [github_url, curated_listing]
+
+  - id: awesome-claude-skills
+    name: awesome-claude-skills
+    tier: 2
+    category: skill
+    access: git
+    endpoint: https://github.com/topics/claude-skill
+    auth_required: false
+    poll_freq: daily
+    surfaces: skill repos tagged claude-skill
+    trust_signals: [github_url]
+
+  - id: vercel-find-skills
+    name: vercel-labs find-skills
+    tier: 2
+    category: skill
+    access: api
+    endpoint: https://skills.sh
+    auth_required: false
+    poll_freq: daily
+    surfaces: skills installable via `npx skills add`, with install counts
+    trust_signals: [install_count]
+
+# ---------------------------------------------------------------------------
+# TIER 3 — Trending / launches / social. Goal: freshness.
+# ---------------------------------------------------------------------------
+tier3_trending:
+  - id: github-search
+    name: GitHub Search API
+    tier: 3
+    category: any
+    access: api
+    endpoint: https://api.github.com/search/repositories?q={{topic}}+created:>{{lastRun}}&sort=stars
+    auth_required: true        # GitHub token (higher rate limit)
+    poll_freq: daily
+    surfaces: new repos by topic (mcp, claude-skill, claude-code, ai-agent)
+    trust_signals: [stars, last_commit, github_url]
+    topics: [mcp, claude-skill, claude-code, ai-agent, agent-skills]
+
+  - id: product-hunt
+    name: Product Hunt
+    tier: 3
+    category: any
+    access: graphql
+    endpoint: https://api.producthunt.com/v2/api/graphql
+    auth_required: true
+    poll_freq: daily
+    surfaces: new dev/AI tool launches
+    trust_signals: [upvotes]
+
+  - id: hacker-news
+    name: Hacker News (Algolia)
+    tier: 3
+    category: any
+    access: api
+    endpoint: https://hn.algolia.com/api/v1/search_by_date?query={{q}}&tags=story
+    auth_required: false
+    poll_freq: daily
+    surfaces: Show HN launches, tool discussions
+    trust_signals: [points, num_comments]
+
+  - id: reddit
+    name: Reddit
+    tier: 3
+    category: any
+    access: api
+    endpoint: https://www.reddit.com/r/{{sub}}/new.json
+    auth_required: false
+    poll_freq: daily
+    surfaces: community-surfaced tools
+    trust_signals: [upvotes]
+    subs: [mcp, ClaudeAI, LocalLLaMA, selfhosted]
+
+  - id: trend-pulse
+    name: claude-world/trend-pulse (MCP)
+    tier: 3
+    category: any
+    access: api          # callable as an MCP server, 20 sources, zero auth
+    endpoint: https://github.com/claude-world/trend-pulse
+    auth_required: false
+    poll_freq: daily
+    surfaces: drop-in trend aggregator (20 sources in one)
+    trust_signals: [aggregated]
+
+# ---------------------------------------------------------------------------
+# TIER 4 — News / RSS. Goal: context (why a tool matters).
+# ---------------------------------------------------------------------------
+tier4_news:
+  - id: tldr-ai
+    name: TLDR AI
+    tier: 4
+    category: news
+    access: rss
+    endpoint: https://tldr.tech/ai/rss
+    auth_required: false
+    poll_freq: daily
+    surfaces: tooling news, launches
+    trust_signals: [editorial_mention]
+
+  - id: latent-space
+    name: Latent Space
+    tier: 4
+    category: news
+    access: rss
+    endpoint: https://www.latent.space/feed
+    auth_required: false
+    poll_freq: daily
+    surfaces: deep-dive AI engineering news
+    trust_signals: [editorial_mention]
+
+  - id: bens-bites
+    name: Ben's Bites
+    tier: 4
+    category: news
+    access: rss
+    endpoint: https://bensbites.beehiiv.com/feed
+    auth_required: false
+    poll_freq: daily
+    surfaces: daily AI product/tool roundup
+    trust_signals: [editorial_mention]
+
+# ---------------------------------------------------------------------------
+# ENRICHMENT — not discovery. Used to SCORE a candidate (see trust-scoring.md).
+# ---------------------------------------------------------------------------
+enrichment:
+  - id: github-repo-api
+    name: GitHub Repo API
+    access: api
+    endpoint: https://api.github.com/repos/{{owner}}/{{repo}}
+    auth_required: true
+    provides: [stars, last_commit, open_issues, forks, archived]
+
+  - id: github-used-by
+    name: GitHub dependents ("Used by")
+    access: scrape
+    endpoint: https://github.com/{{owner}}/{{repo}}/network/dependents
+    auth_required: false
+    provides: [used_by]
+
+  - id: npm-downloads
+    name: npm Downloads API
+    access: api
+    endpoint: https://api.npmjs.org/downloads/point/last-week/{{package}}
+    auth_required: false
+    provides: [weekly_downloads]
+
+  - id: libraries-io
+    name: Libraries.io
+    access: api
+    endpoint: https://libraries.io/api/{{platform}}/{{name}}
+    auth_required: true
+    provides: [sourcerank, dependents_count]
+
+  - id: pypi-stats
+    name: PyPI Stats
+    access: api
+    endpoint: https://pypistats.org/api/packages/{{package}}/recent
+    auth_required: false
+    provides: [weekly_downloads]
+
+# ===========================================================================
+# HARVEST SOURCES — the "Internet Intelligence" engine (separate from tool
+# discovery above). Goal: harvest knowledge the dev/design COMMUNITY shares,
+# extract it (incl. from images), classify into the stage/type/domain taxonomy,
+# and surface it in the dashboard. See ingestion-workflow.md (Pipeline B) and
+# classification-taxonomy.md.
+#
+# Research verdict (honest): for dev/UI-UX knowledge, GitHub + Reddit + Hacker
+# News are HIGH signal and free; Instagram is HIGH-noise + scraping/ban/legal
+# risk -> it is a LOW-PRIORITY supplement, not the backbone.
+# ===========================================================================
+harvest_meta:
+  priority_order: [github, reddit, hackernews, twitter, devto, rss, instagram]
+  keywords: ["#uiux", "ui designer", "frontend", "design system", "component library",
+             "react", "nextjs", "shadcn", "ai agent", "mcp server", "github repo"]
+  signal_note: rank harvested items by source weight x engagement; auto-file only high-confidence.
+
+harvest_backbone:        # high signal, free/cheap APIs — build these FIRST
+  - id: github-harvest
+    name: GitHub (search / discussions / trending)
+    weight: 1.0
+    access: api
+    endpoint: https://api.github.com/search/repositories?q={{kw}}+sort:stars
+    also: [https://api.github.com/search/issues, https://github.com/trending]
+    auth_required: true
+    poll_freq: daily
+    surfaces: repos, issue/discussion threads, READMEs — highest technical signal
+    media: mostly text (no infographic step needed)
+
+  - id: reddit-harvest
+    name: Reddit
+    weight: 0.8
+    access: api
+    endpoint: https://www.reddit.com/r/{{sub}}/new.json?limit=100
+    auth_required: false       # OAuth raises limits; ~60 req/min unauth
+    poll_freq: daily
+    surfaces: community-voted tools/tips; voting filters noise
+    subs: [webdev, UI_Design, Frontend, reactjs, nextjs, SideProject, selfhosted, LocalLLaMA]
+
+  - id: hackernews-harvest
+    name: Hacker News (Algolia)
+    weight: 0.8
+    access: api
+    endpoint: https://hn.algolia.com/api/v1/search_by_date?query={{kw}}&tags=story
+    auth_required: false
+    poll_freq: daily
+    surfaces: Show HN launches, high-quality tool discussions
+
+harvest_secondary:       # add after backbone works
+  - id: twitter-harvest
+    name: X / Twitter API v2
+    weight: 0.6
+    access: api
+    endpoint: https://api.twitter.com/2/tweets/search/recent?query={{kw}}
+    auth_required: true        # paid tiers; rate-limited
+    poll_freq: daily
+    surfaces: real-time dev conversations (noisier)
+
+  - id: devto-harvest
+    name: Dev.to API
+    weight: 0.6
+    access: api
+    endpoint: https://dev.to/api/articles?tag={{tag}}
+    auth_required: false
+    poll_freq: daily
+    surfaces: developer articles/tutorials by tag
+
+  - id: rss-harvest
+    name: Dev newsletters (RSS)
+    weight: 0.5
+    access: rss
+    endpoint: [https://tldr.tech/api/rss/webdev, https://www.latent.space/feed, https://daily.dev]
+    auth_required: false
+    poll_freq: daily
+    surfaces: curated weekly roundups
+
+harvest_supplement:      # LOW priority — high noise + risk; optional
+  - id: instagram-harvest
+    name: Instagram (Apify)
+    weight: 0.3
+    access: api               # via Apify actor, NOT direct scraping
+    actor: apify/instagram-hashtag-scraper
+    endpoint: https://api.apify.com/v2/acts/apify~instagram-hashtag-scraper/runs
+    auth_required: true        # Apify token; ~$2/1000 results
+    poll_freq: weekly
+    surfaces: caption + image URLs + engagement for #uiux etc. (infographic carousels)
+    media: images -> run Pipeline B vision step (llama3.2-vision) to extract text
+    RISK: |
+      Instagram ToS forbids scraping; Meta won a major scraping case (May 2026).
+      Account-ban risk 30-70% if self-hosted; ~10-30% even via Apify proxies.
+      Official Graph API is useless for discovery (30 hashtags/week, can't fetch
+      hashtag posts). Use ONLY as a low-weight supplement; never the backbone.
+      GDPR: filter/avoid storing EU personal data.

@@ -1,0 +1,18 @@
+# ── secrets — NEVER commit ──
+.env
+.env.*
+!.env.example
+
+# ── node ──
+node_modules/
+npm-debug.log*
+*.log
+
+# ── os / editor ──
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── local scratch ──
+*.local

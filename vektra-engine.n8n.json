@@ -1,0 +1,56 @@
+{
+  "name": "Vektra Intelligence Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "schedule-1",
+      "name": "Every morning (08:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Vektra Intelligence Engine — single n8n Code node (mode: \"Run Once for All Items\").\n// This is the readable source of truth. It is also embedded in vektra-engine.n8n.json.\n// Flow: Schedule Trigger -> THIS Code node.\n//\n// SETUP: edit CONFIG below (5 values), import the workflow, activate.\n// Reads sources -> Ollama brain (summary/score/tags) -> Supabase REST insert\n// -> optional Claude Haiku daily brief -> optional WhatsApp (Evolution API).\n//\n// No npm install. Uses n8n's built-in this.helpers.httpRequest.\n\nconst CONFIG = {\n  keywords: [\"image to video\", \"ui ux\", \"shadcn\", \"nextjs\",\n             \"supabase\", \"ai agent\", \"n8n automation\", \"mcp server\", \"faceless video\"],\n\n  // --- required ---\n  ollamaUrl: \"http://localhost:11434\",          // your Ollama base URL\n  ollamaModel: \"llama3.2\",\n  supabaseUrl: \"https://YOUR-PROJECT.supabase.co\",  // REST base (no trailing slash)\n  supabaseServiceKey: \"PASTE_SERVICE_ROLE_KEY\",     // service_role (server-side only)\n\n  // --- optional (leave blank to skip) ---\n  githubToken: \"\",                              // raises GitHub limit\n  litellmUrl: \"\",                               // e.g. http://localhost:4000 (Haiku brief)\n  litellmKey: \"\",\n  haikuModel: \"claude-haiku-4-5\",\n  evolutionUrl: \"\",                             // WhatsApp via Evolution API\n  evolutionInstance: \"\",\n  evolutionApiKey: \"\",\n  whatsappTo: \"\",                               // e.g. 4915112345678\n};\n\nconst http = this.helpers.httpRequest;\nconst sleep = (ms) => new Promise((r) => setTimeout(r, ms));\nfunction hash(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(16); }\n\n// ---------------- sources ----------------\nasync function hn(kw) {\n  try {\n    const j = await http({ url: \"https://hn.algolia.com/api/v1/search?query=\" + encodeURIComponent(kw) + \"&tags=story&hitsPerPage=10\", json: true });\n    return (j.hits || []).map((h) => ({ source: \"hackernews\", title: h.title || h.story_title || \"\", url: h.url || (\"https://news.ycombinator.com/item?id=\" + h.objectID), signal: h.points || 0, keyword: kw }));\n  } catch (e) { return []; }\n}\nasync function gh(kw) {\n  try {\n    const headers = { \"User-Agent\": \"vektra-intel\", Accept: \"application/vnd.github+json\" };\n    if (CONFIG.githubToken) headers.Authorization = \"Bearer \" + CONFIG.githubToken;\n    const j = await http({ url: \"https://api.github.com/search/repositories?q=\" + encodeURIComponent(kw) + \"&sort=stars&order=desc&per_page=5\", headers, json: true });\n    return (j.items || []).map((it) => ({ source: \"github\", title: it.full_name + (it.description ? \" — \" + it.description : \"\"), url: it.html_url, signal: it.stargazers_count || 0, keyword: kw }));\n  } catch (e) { return []; }\n}\nasync function devto(kw) {\n  try {\n    const tag = kw.split(/\\s+/)[0].replace(/[^a-z0-9]/gi, \"\").toLowerCase();\n    if (!tag) return [];\n    const j = await http({ url: \"https://dev.to/api/articles?tag=\" + encodeURIComponent(tag) + \"&per_page=6&top=90\", json: true });\n    return (Array.isArray(j) ? j : []).map((a) => ({ source: \"devto\", title: a.title + (a.description ? \" — \" + a.description : \"\"), url: a.url, signal: a.positive_reactions_count || 0, keyword: kw }));\n  } catch (e) { return []; }\n}\n\n// ---------------- brain (Ollama) ----------------\nconst SYS = \"You analyze a harvested dev/AI item for an operator (a solo builder / small dev agency; prefers free/self-hostable). Value = saves time OR resellable as a service OR unlocks a new offering. Stay broad: a strong general tool still scores high. Return STRICT JSON only.\";\nasync function brain(item) {\n  const prompt = SYS + \"\\nITEM title: \" + item.title + \"\\nsource: \" + item.source + \"\\nsignal: \" + item.signal +\n    '\\nReturn JSON: {\"summary\":\"<=2 sentences\",\"relevance_score\":0-100,\"why_it_matters\":\"one line\",\"tags\":[\"3-6 lowercase\"],\"stage\":\"01-ideation..09-learning-reference|null\",\"type\":\"agent|skill|mcp|mvp|library|app|reference|null\",\"action\":\"save|inbox|skip\",\"confidence\":0.0-1.0}';\n  try {\n    const r = await http({ method: \"POST\", url: CONFIG.ollamaUrl + \"/api/generate\", json: true,\n      body: { model: CONFIG.ollamaModel, prompt, stream: false, format: \"json\" } });\n    const o = JSON.parse(r.response || \"{}\");\n    return o;\n  } catch (e) { return { summary: item.title.slice(0, 180), relevance_score: 40, why_it_matters: \"\", tags: [item.keyword], stage: null, type: null, action: \"skip\", confidence: 0.3 }; }\n}\n\n// ---------------- run ----------------\nconst kws = CONFIG.keywords;\nlet raw = [];\nfor (let i = 0; i < kws.length; i++) {\n  raw.push(...(await hn(kws[i])));\n  raw.push(...(await devto(kws[i])));\n  if (i < 6) { raw.push(...(await gh(kws[i]))); await sleep(1200); }  // GitHub rate-limit friendly\n}\n\n// dedup by url\nconst seen = new Set();\nconst rows = [];\nfor (const it of raw) {\n  if (!it.url || seen.has(it.url)) continue;\n  seen.add(it.url);\n  const b = await brain(it);\n  rows.push({\n    source_id: it.source,\n    external_url: it.url,\n    text: it.title,\n    combined_text: it.title,\n    summary: b.summary || null,\n    why_it_matters: b.why_it_matters || null,\n    relevance_score: b.relevance_score ?? null,\n    stage: b.stage || null,\n    type: b.type || null,\n    tags: b.tags || [],\n    is_new: true,\n    for_review: (b.confidence ?? 0) < 0.8,\n    confidence: b.confidence ?? null,\n    engagement: { signal: it.signal },\n    content_hash: hash(it.url),\n  });\n}\n\n// insert into Supabase (ignore duplicates via unique content_hash)\nlet inserted = 0;\nif (rows.length && CONFIG.supabaseUrl.indexOf(\"YOUR-PROJECT\") === -1) {\n  try {\n    await http({ method: \"POST\", url: CONFIG.supabaseUrl + \"/rest/v1/intel_items\",\n      headers: { apikey: CONFIG.supabaseServiceKey, Authorization: \"Bearer \" + CONFIG.supabaseServiceKey,\n        \"Content-Type\": \"application/json\", Prefer: \"resolution=ignore-duplicates,return=minimal\" },\n      body: rows });\n    inserted = rows.length;\n  } catch (e) { /* surfaced in return */ }\n}\n\n// optional: daily WhatsApp brief (top 5 by relevance)\nconst top = rows.filter((r) => (r.relevance_score || 0) >= 60).sort((a, b) => b.relevance_score - a.relevance_score).slice(0, 5);\nif (CONFIG.evolutionUrl && CONFIG.whatsappTo && top.length) {\n  const lines = top.map((r) => \"• \" + r.text.slice(0, 60) + \" (\" + r.relevance_score + \")\").join(\"\\n\");\n  const msg = \"Vektra: bugün \" + rows.length + \" bulgu. En iyiler:\\n\" + lines + \"\\nDashboard'da hepsi.\";\n  try {\n    await http({ method: \"POST\", url: CONFIG.evolutionUrl + \"/message/sendText/\" + CONFIG.evolutionInstance,\n      headers: { apikey: CONFIG.evolutionApiKey, \"Content-Type\": \"application/json\" },\n      body: { number: CONFIG.whatsappTo, text: msg } });\n  } catch (e) {}\n}\n\nreturn [{ json: { harvested: raw.length, stored: inserted, top: top.length } }];\n"
+      },
+      "id": "engine-1",
+      "name": "Vektra Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every morning (08:00)": {
+      "main": [
+        [
+          {
+            "node": "Vektra Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {}
+}
