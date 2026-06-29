@@ -576,7 +576,7 @@ function renderIntel(){
     (!fs||d.source_id===fs) && ((d.relevance_score||0)>=ms) &&
     (!fopp || d.opportunity_type===fopp) && ((d.money_score||0)>=mm) &&
     (!onlyNew || d.is_new) && (!onlySaved || d.saved) && (!onlyToday || isToday(d.created_at)) &&
-    (!q || (d.text||"").toLowerCase().includes(q) || (d.tags||[]).join(" ").toLowerCase().includes(q)));
+    (!q || (d.text||"").toLowerCase().includes(q) || (d.summary||"").toLowerCase().includes(q) || (d.why_it_matters||"").toLowerCase().includes(q) || (d.tags||[]).join(" ").toLowerCase().includes(q)));
   const todayN = INTEL.filter(d=>isToday(d.created_at)).length;
   g("icount").textContent = rows.length+" / "+INTEL.length+(todayN?" · "+t("today")+" "+todayN:"");
   const sc = {github:"#22c55e",hackernews:"#f59e0b",devto:"#a78bfa",youtube:"#ef4444",instagram:"#ec4899",producthunt:"#da552f",reddit:"#ff4500"};
