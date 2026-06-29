@@ -176,6 +176,7 @@
         <label class="chk"><input type="checkbox" id="itoday"> <span data-i18n="f_today">Bugün</span></label>
         <label class="chk"><input type="checkbox" id="isaved"> <span data-i18n="f_saved">⭐ kayıtlılar</span></label>
         <button class="ghost" id="irefresh" data-i18n="btn_refresh">Yenile</button>
+        <button id="iharvest" data-i18n="btn_harvest">⚡ Şimdi Tara</button>
         <span class="count" id="icount"></span>
       </div>
       <div class="quickchips" id="ichips">
@@ -225,6 +226,8 @@
       <input id="sbAskUrl" placeholder="https://YOUR-n8n-domain/webhook/vektra-ask">
       <label style="margin-top:8px" data-i18n="set_askkey">Sor anahtarı (webhook key — opsiyonel)</label>
       <input id="sbAskKey" data-i18n-ph="ph_askkey" placeholder="Sor webhook'una token koyduysan buraya yapıştır">
+      <label style="margin-top:8px" data-i18n="set_harvesturl">Tara webhook URL (motoru tetikle) — opsiyonel</label>
+      <input id="sbHarvestUrl" data-i18n-ph="ph_harvesturl" placeholder="https://YOUR-n8n-domain/webhook/vektra-harvest">
       <div style="margin-top:10px;display:flex;gap:8px">
         <button id="sbSave" data-i18n="btn_save">Kaydet & Bağlan</button>
         <button class="ghost" id="sbClear" data-i18n="btn_clear">Temizle</button>
@@ -392,13 +395,14 @@ const EN = {
   intel_connect_b:"Connect Supabase to see intelligence.",
   intel_connect_p:"This stays empty until the engine is set up. Enter your Supabase URL + anon key in the \"Settings\" tab; once the engine (n8n) starts writing data it shows up here.",
   all_sources:"All sources", opp_all:"All opportunities", score_all:"Relevance: all", score_60:"rel 60+", score_70:"rel 70+", score_80:"rel 80+",
-  money_all:"Money: all", f_new:"NEW", f_today:"Today", f_saved:"⭐ saved", btn_refresh:"Refresh",
+  money_all:"Money: all", f_new:"NEW", f_today:"Today", f_saved:"⭐ saved", btn_refresh:"Refresh", btn_harvest:"⚡ Harvest now",
   quick_hint:"Quick pick:", chip_money:"💰 Money plays", chip_score:"🔥 High relevance 80+", chip_today:"🆕 Today", chip_tools:"🛠️ Tools", chip_ideas:"💡 Ideas", chip_saved:"⭐ Saved", chip_reset:"↺ Reset", tags_label:"Tags:",
   ask_b:"Ask your library", ask_p:"Ask in natural language — a synthesized, cited answer from the library + all intelligence.", btn_ask:"Ask",
   set_b:"Supabase connection",
   set_p:"Stored only in this browser. Use the <code>anon</code> key (NOT the secret service key).",
   set_url:"Supabase URL", set_anon:"Supabase anon key",
   set_askurl:"Ask webhook URL (your own n8n address) — optional", set_askkey:"Ask token (webhook key — optional)",
+  set_harvesturl:"Harvest webhook URL (trigger the engine) — optional",
   btn_save:"Save & Connect", btn_clear:"Clear",
   setup_h:"Setup guide — 4 steps",
   setup_p:"For anyone setting this up from scratch. Follow in order — no guesswork.",
@@ -446,6 +450,7 @@ const EN_PH = {
   ph_lib_search:"Search tools…", ph_intel_search:"Search title/tag…",
   ph_ask:"e.g. which API for image→video? / how to do auth on Supabase?",
   ph_askkey:"paste here if you set a token on the Ask webhook",
+  ph_harvesturl:"https://YOUR-n8n-domain/webhook/vektra-harvest",
 };
 const DYN = {
   tr:{ conn_on:"● bağlı: ", conn_off:"○ Supabase bağlı değil", all_stages:"Tüm aşamalar", all_types:"Tüm türler", all_domains:"Tüm alanlar",
@@ -458,6 +463,7 @@ const DYN = {
        ask_need_url:"Önce <b>Ayarlar</b> sekmesinden <b>Sor webhook URL</b>’ini gir (kendi n8n vektra-ask webhook adresin).",
        ask_thinking:"Düşünüyor… kütüphane + istihbarat taranıyor (~20-40 sn).", ask_err:"Hata: ", ask_err2:" (internet / webhook?).",
        sb_saved:"Kaydedildi. İstihbarat sekmesini aç.", sb_cleared:"Temizlendi.", copied:"kopyalandı ✓", copysel:"metni seç + Ctrl-C",
+       harvest_need_url:"Önce Ayarlar'dan Tara webhook URL'ini gir.", harvesting:"Taranıyor… (1-2 dk)", harvest_done:"✓ Tarama bitti — feed yenilendi", harvest_err:"Tarama hatası: ",
        hs_lib:"📚 kütüphane kartı", hs_intel:"🛰️ istihbarat satırı", hs_updated:"son güncelleme", hs_loading:"Canlı sayılar yükleniyor…",
        hs_note:"Motor her sabah 08:00'de çalışır; sayılar otomatik artar.",
        hs_fail:"Canlı durum alınamadı", hs_fail2:"Ayarlar'dan bağlantıyı kontrol et.",
@@ -472,6 +478,7 @@ const DYN = {
        ask_need_url:"First set the <b>Ask webhook URL</b> in the <b>Settings</b> tab (your own n8n vektra-ask webhook address).",
        ask_thinking:"Thinking… scanning library + intel (~20-40s).", ask_err:"Error: ", ask_err2:" (internet / webhook?).",
        sb_saved:"Saved. Open the Intel tab.", sb_cleared:"Cleared.", copied:"copied ✓", copysel:"select text + Ctrl-C",
+       harvest_need_url:"First set the Harvest webhook URL in Settings.", harvesting:"Harvesting… (1-2 min)", harvest_done:"✓ Harvest done — feed refreshed", harvest_err:"Harvest error: ",
        hs_lib:"📚 library cards", hs_intel:"🛰️ intel rows", hs_updated:"last update", hs_loading:"Loading live numbers…",
        hs_note:"The engine runs every morning; the numbers grow automatically.",
        hs_fail:"Couldn't load live status", hs_fail2:"Check the connection in Settings.",
@@ -547,9 +554,9 @@ const CFG = JSON.parse(localStorage.getItem("vektra_sb") || "{}");
 function setConn(){ g("conn").textContent = CFG.url ? (t("conn_on")+CFG.url.replace(/^https?:\/\//,"").slice(0,28)) : t("conn_off"); }
 setConn();
 loadCloudLib();
-g("sbUrl").value = CFG.url || ""; g("sbKey").value = CFG.key || ""; g("sbAskUrl").value = CFG.askUrl || ""; g("sbAskKey").value = CFG.askKey || "";
+g("sbUrl").value = CFG.url || ""; g("sbKey").value = CFG.key || ""; g("sbAskUrl").value = CFG.askUrl || ""; g("sbAskKey").value = CFG.askKey || ""; g("sbHarvestUrl").value = CFG.harvestUrl || "";
 g("sbSave").addEventListener("click", () => {
-  CFG.url = g("sbUrl").value.trim().replace(/\/$/,""); CFG.key = g("sbKey").value.trim(); CFG.askUrl = g("sbAskUrl").value.trim().replace(/\/$/,""); CFG.askKey = g("sbAskKey").value.trim();
+  CFG.url = g("sbUrl").value.trim().replace(/\/$/,""); CFG.key = g("sbKey").value.trim(); CFG.askUrl = g("sbAskUrl").value.trim().replace(/\/$/,""); CFG.askKey = g("sbAskKey").value.trim(); CFG.harvestUrl = g("sbHarvestUrl").value.trim().replace(/\/$/,"");
   localStorage.setItem("vektra_sb", JSON.stringify(CFG)); setConn(); loadCloudLib();
   g("sbStatus").textContent = t("sb_saved"); });
 g("sbClear").addEventListener("click", () => { localStorage.removeItem("vektra_sb"); CFG.url=CFG.key=""; g("sbUrl").value=g("sbKey").value=""; setConn(); g("sbStatus").textContent=t("sb_cleared"); });
@@ -669,6 +676,20 @@ async function ask(){
 g("askgo").addEventListener("click", ask);
 g("askq").addEventListener("keydown", e=>{ if(e.key==="Enter") ask(); });
 g("irefresh").addEventListener("click", loadIntel);
+async function harvest(){
+  const btn=g("iharvest");
+  if(!CFG.harvestUrl){ toast(t("harvest_need_url")); return; }
+  const prev=btn.innerHTML; btn.disabled=true; btn.textContent="⏳ "+t("harvesting");
+  try{
+    const r=await fetch(CFG.harvestUrl + (CFG.askKey?("?key="+encodeURIComponent(CFG.askKey)):""));
+    let d={}; try{ d=await r.json(); }catch(e){}
+    const n=(d&&d.stored!=null)?d.stored:((d&&d.harvested!=null)?d.harvested:"");
+    await loadIntel();
+    toast(t("harvest_done")+(n!==""?(" · "+n):""));
+  }catch(e){ toast(t("harvest_err")+(e&&e.message||e)); }
+  btn.disabled=false; btn.innerHTML=prev;
+}
+g("iharvest").addEventListener("click", harvest);
 
 // ---------- setup tab (zero-question onboarding) ----------
 const SETUP_SQL = `-- Vektra — Supabase kurulum SQL. Supabase > SQL Editor'a yapıştır > Run (tek sefer).
