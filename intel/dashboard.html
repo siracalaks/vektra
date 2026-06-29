@@ -54,6 +54,11 @@
   .chk:hover{color:var(--text);border-color:var(--border-2)}
   .chk input{width:auto;accent-color:var(--accent)}
   .count{margin-left:auto;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+  .quickchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 14px}
+  .qhint{font-size:12px;color:var(--muted)}
+  .chip{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;cursor:pointer;transition:border-color .15s,background .15s}
+  .chip:hover{border-color:var(--border-2);background:rgba(99,102,241,.14)}
+  .chip-reset{color:var(--muted)}
   .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
   .card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)),var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px;overflow:hidden;transition:transform .16s,border-color .16s,box-shadow .16s}
   .card:hover{transform:translateY(-3px);border-color:var(--border-2);box-shadow:0 18px 40px -18px rgba(0,0,0,.7),0 0 0 1px rgba(99,102,241,.12)}
@@ -172,6 +177,19 @@
         <label class="chk"><input type="checkbox" id="isaved"> <span data-i18n="f_saved">⭐ kayıtlılar</span></label>
         <button class="ghost" id="irefresh" data-i18n="btn_refresh">Yenile</button>
         <span class="count" id="icount"></span>
+      </div>
+      <div class="quickchips" id="ichips">
+        <span class="qhint" data-i18n="quick_hint">Hızlı seç:</span>
+        <button class="chip" data-act="money50" data-i18n="chip_money">💰 Para fırsatları</button>
+        <button class="chip" data-act="score80" data-i18n="chip_score">🔥 Yüksek ilgi 80+</button>
+        <button class="chip" data-act="today" data-i18n="chip_today">🆕 Bugün</button>
+        <button class="chip" data-act="opp:tool" data-i18n="chip_tools">🛠️ Araçlar</button>
+        <button class="chip" data-act="opp:idea" data-i18n="chip_ideas">💡 Fikirler</button>
+        <button class="chip" data-act="q:video">📹 video</button>
+        <button class="chip" data-act="q:agent">🤖 ai agent</button>
+        <button class="chip" data-act="q:mcp">🔌 mcp</button>
+        <button class="chip" data-act="saved" data-i18n="chip_saved">⭐ Kayıtlılar</button>
+        <button class="chip chip-reset" data-act="reset" data-i18n="chip_reset">↺ Sıfırla</button>
       </div>
       <div class="grid" id="igrid"></div>
     </div>
@@ -371,6 +389,7 @@ const EN = {
   intel_connect_p:"This stays empty until the engine is set up. Enter your Supabase URL + anon key in the \"Settings\" tab; once the engine (n8n) starts writing data it shows up here.",
   all_sources:"All sources", opp_all:"All opportunities", score_all:"Relevance: all", score_60:"rel 60+", score_70:"rel 70+", score_80:"rel 80+",
   money_all:"Money: all", f_new:"NEW", f_today:"Today", f_saved:"⭐ saved", btn_refresh:"Refresh",
+  quick_hint:"Quick pick:", chip_money:"💰 Money plays", chip_score:"🔥 High relevance 80+", chip_today:"🆕 Today", chip_tools:"🛠️ Tools", chip_ideas:"💡 Ideas", chip_saved:"⭐ Saved", chip_reset:"↺ Reset",
   ask_b:"Ask your library", ask_p:"Ask in natural language — a synthesized, cited answer from the library + all intelligence.", btn_ask:"Ask",
   set_b:"Supabase connection",
   set_p:"Stored only in this browser. Use the <code>anon</code> key (NOT the secret service key).",
@@ -609,6 +628,18 @@ g("igrid").addEventListener("click", e => {
   }
 });
 ["iq","isource","iopp","iscore","imoney","inew","itoday","isaved"].forEach(id=>g(id).addEventListener("input",renderIntel));
+g("ichips").addEventListener("click", e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  const a=b.dataset.act;
+  if(a==="reset"){ g("iq").value=""; g("isource").value=""; g("iopp").value=""; g("iscore").value="0"; g("imoney").value="0"; g("inew").checked=g("itoday").checked=g("isaved").checked=false; }
+  else if(a==="money50") g("imoney").value="50";
+  else if(a==="score80") g("iscore").value="80";
+  else if(a==="today") g("itoday").checked=true;
+  else if(a==="saved") g("isaved").checked=true;
+  else if(a.indexOf("opp:")===0) g("iopp").value=a.slice(4);
+  else if(a.indexOf("q:")===0) g("iq").value=a.slice(2);
+  renderIntel();
+});
 
 // ---------- ask (chat over library + intel via YOUR n8n webhook; set the URL in Ayarlar) ----------
 async function ask(){
