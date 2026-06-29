@@ -167,7 +167,7 @@
     </div>
     <div id="intelMain">
       <div class="filters">
-        <input id="iq" data-i18n-ph="ph_intel_search" placeholder="Ara: başlık/etiket…">
+        <input id="iq" data-i18n-ph="ph_intel_search" placeholder="Ara… (⚡ Şimdi Tara o terimi canlı araştırır)">
         <select id="isource"><option value="" data-i18n="all_sources">Tüm kaynaklar</option></select>
         <select id="iopp"><option value="" data-i18n="opp_all">Tüm fırsatlar</option><option>tool</option><option>idea</option><option>lead</option><option>trend</option><option>clone</option></select>
         <select id="iscore"><option value="0" data-i18n="score_all">İlgi: hepsi</option><option value="60" data-i18n="score_60">ilgi 60+</option><option value="70" data-i18n="score_70">ilgi 70+</option><option value="80" data-i18n="score_80">ilgi 80+</option></select>
@@ -446,7 +446,7 @@ const EN = {
   h_sec_list:"<li><b>Where keys live:</b> in n8n credentials / a repo-external <code>.env</code> — NEVER in git.</li><li><b>Brain & embed:</b> Claude Haiku (scoring) + Gemini (embedding). Most sources free/self-host.</li><li><b>Cost:</b> ~<b>$3-8 / month</b> (a few cents a day). On the free/cheap tiers of Supabase + n8n + Apify.</li><li><b>Access:</b> you can put the site behind <b>Basic Auth</b>; the “Ask” webhook is token-protected.</li><li><b>Data security (RLS):</b> from outside, anon only <i>reads</i> + updates <code>saved</code>; writes only with the engine's secret service key.</li>",
 };
 const EN_PH = {
-  ph_lib_search:"Search tools…", ph_intel_search:"Search title/tag…",
+  ph_lib_search:"Search tools…", ph_intel_search:"Search… (⚡ Harvest now researches this term live)",
   ph_ask:"e.g. which API for image→video? / how to do auth on Supabase?",
   ph_askkey:"paste here if you set a token on the Ask webhook",
   ph_harvesturl:"https://YOUR-n8n-domain/webhook/vektra-harvest",
@@ -677,9 +677,11 @@ g("askq").addEventListener("keydown", e=>{ if(e.key==="Enter") ask(); });
 async function harvest(){
   const btn=g("iharvest");
   if(!CFG.harvestUrl){ toast(t("harvest_need_url")); return; }
-  const prev=btn.innerHTML; btn.disabled=true; btn.textContent="⏳ "+t("harvesting");
+  const term=g("iq").value.trim();
+  const params=[]; if(CFG.askKey) params.push("key="+encodeURIComponent(CFG.askKey)); if(term) params.push("q="+encodeURIComponent(term));
+  const prev=btn.innerHTML; btn.disabled=true; btn.textContent="⏳ "+(term?("“"+term+"” "):"")+t("harvesting");
   try{
-    const r=await fetch(CFG.harvestUrl + (CFG.askKey?("?key="+encodeURIComponent(CFG.askKey)):""));
+    const r=await fetch(CFG.harvestUrl + (params.length?("?"+params.join("&")):""));
     let d={}; try{ d=await r.json(); }catch(e){}
     const n=(d&&d.stored!=null)?d.stored:((d&&d.harvested!=null)?d.harvested:"");
     await loadIntel();
