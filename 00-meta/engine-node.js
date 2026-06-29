@@ -18,6 +18,7 @@ const CONFIG = {
   github: "",                                 // optional, raises rate limit + README reads
   firecrawl: "",                              // optional, deep-read non-GitHub pages
   youtube: "",                                // optional, YouTube Data API v3 — adds video tutorials/demos as intel
+  hf: "",                                     // optional, Hugging Face token — only raises rate limits (model search works keyless)
   apifyToken: "",                             // optional, Apify — enables Instagram hashtag trend signal (opt-in, paid)
   instagramTags: [],                          // e.g. ["uiux","webdesign"] — only scraped if apifyToken is set
   redditSubs: [],                             // e.g. ["SaaS","SideProject"] — top/week via Apify Reddit Scraper Lite (uses apifyToken; no Reddit OAuth)
@@ -43,6 +44,26 @@ async function gh(kw){
   try{ const headers={"User-Agent":"vektra",Accept:"application/vnd.github+json"}; if(CONFIG.github) headers.Authorization="Bearer "+CONFIG.github;
     const j=await http({url:"https://api.github.com/search/repositories?q="+encodeURIComponent(kw)+"&sort=stars&order=desc&per_page=4",headers,json:true});
     return (j.items||[]).map(it=>({source:"github",title:it.full_name+(it.description?" — "+it.description:""),url:it.html_url,signal:it.stargazers_count||0}));
+  }catch(e){ return []; }
+}
+// Reddit — keyless public search JSON (term-driven; no Reddit app/OAuth, just a User-Agent).
+async function reddit(kw){
+  try{ const j=await http({url:"https://www.reddit.com/search.json?q="+encodeURIComponent(kw)+"&sort=top&t=month&limit=4&type=link",headers:{"User-Agent":"vektra/1.0 (intel harvester)"},json:true});
+    return ((j.data&&j.data.children)||[]).map(c=>c.data).filter(d=>d&&d.title).map(d=>({source:"reddit",title:"[r/"+(d.subreddit||"")+"] "+d.title,url:d.url_overridden_by_dest||("https://www.reddit.com"+d.permalink),signal:d.score||0,desc:(d.selftext||"").slice(0,1500)})).filter(x=>x.url);
+  }catch(e){ return []; }
+}
+// Dev.to — keyless public articles by tag (practical tutorials/write-ups).
+async function devto(kw){
+  try{ const tag=kw.toLowerCase().replace(/[^a-z0-9]/g,""); if(!tag) return [];
+    const j=await http({url:"https://dev.to/api/articles?per_page=3&top=30&tag="+encodeURIComponent(tag),json:true});
+    return (Array.isArray(j)?j:[]).map(a=>({source:"devto",title:a.title,url:a.url,signal:a.positive_reactions_count||0,desc:(a.description||"").slice(0,1500)})).filter(x=>x.url&&x.title);
+  }catch(e){ return []; }
+}
+// Hugging Face — keyless model search (token only raises rate limits).
+async function hf(kw){
+  try{ const headers={}; if(CONFIG.hf) headers.Authorization="Bearer "+CONFIG.hf;
+    const j=await http({url:"https://huggingface.co/api/models?search="+encodeURIComponent(kw)+"&sort=likes&direction=-1&limit=3",headers,json:true});
+    return (Array.isArray(j)?j:[]).map(m=>({source:"huggingface",title:m.id+(m.pipeline_tag?" — "+m.pipeline_tag:""),url:"https://huggingface.co/"+m.id,signal:m.likes||0,desc:""})).filter(x=>x.url);
   }catch(e){ return []; }
 }
 
@@ -143,7 +164,7 @@ async function embedAll(texts){
 const vecStr=(v)=> (v&&v.length) ? ("["+v.join(",")+"]") : null;
 
 let raw=[];
-for(const kw of CONFIG.keywords){ raw.push(...await hn(kw)); raw.push(...await gh(kw)); if(CONFIG.youtube) raw.push(...await yt(kw)); await sleep(700); }
+for(const kw of CONFIG.keywords){ raw.push(...await hn(kw)); raw.push(...await gh(kw)); raw.push(...await reddit(kw)); raw.push(...await devto(kw)); raw.push(...await hf(kw)); if(CONFIG.youtube) raw.push(...await yt(kw)); await sleep(700); }
 if(CONFIG.productHunt){ raw.push(...await ph()); }
 if(CONFIG.apifyToken && CONFIG.redditSubs && CONFIG.redditSubs.length){ raw.push(...await rd(CONFIG.redditSubs)); }
 if(CONFIG.apifyToken && CONFIG.instagramTags && CONFIG.instagramTags.length){ raw.push(...await ig(CONFIG.instagramTags)); }
